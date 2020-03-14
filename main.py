@@ -2,7 +2,7 @@ import sys
 from city import City
 from building import Building
 
-#USAGE: main input_file
+#USAGE: main input_file  
 
 file_name = sys.argv[1]
 buildings = []
