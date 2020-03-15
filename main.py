@@ -2,6 +2,7 @@ import sys
 from city import City
 from building_proj import BuildingProj
 from building import Building
+from state import State
 #USAGE: main input_file
 
 # returns city object. appends building projects to buildings
@@ -42,14 +43,16 @@ def get_best_residential(buildingProjs):
 # main
 file_name = sys.argv[1]
 buildingProjs = []
-city = None
-
 city = parse_file(file_name, buildingProjs)
 
-for building in buildingProjs:
-    print(building.type)
+# for building in buildingProjs:
+#     if building.type=='R':
+#         print(building.ratio)
 
-bestResidential, n = get_best_residential(buildingProjs)
+bestResidential = get_best_residential(buildingProjs)
 
-print(bestResidential.cenas)
-print(n)
+initMap = [['.' for col in range(city.cols)] for row in range(city.rows)]
+
+initState = State(city, [], initMap)
+
+print(initState.map)
