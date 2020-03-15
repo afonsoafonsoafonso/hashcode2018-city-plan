@@ -38,7 +38,7 @@ def get_best_residential(buildingProjs):
                 best = building
                 max = building.ratio
                 nBest = n
-    return best,nBest
+    return best#,nBest
 
 # main
 file_name = sys.argv[1]
@@ -55,4 +55,8 @@ initMap = [['.' for col in range(city.cols)] for row in range(city.rows)]
 
 initState = State(city, [], initMap)
 
-print(initState.map)
+
+print(bestResidential.plan)
+nextState = initState.nextState(bestResidential, 0, 0)
+
+print(nextState.map)

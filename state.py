@@ -12,14 +12,14 @@ class State:
 
     # cria um novo estado e adiciona building ao mapa
     def nextState(self, buildingProj, mrow, mcol):
-        newMap = self.map.deepcopy()
+        newMap = deepcopy(self.map)
         newBuildings = deepcopy(self.buildings).append(Building(buildingProj, mrow, mcol))
 
         for prow in range(buildingProj.rows):
             for pcol in range(buildingProj.cols):
                 if(buildingProj.plan[prow][pcol]=='#'):
-                    newMap[mrow+prow][mcol+mcol] = len(self.buildings)+1
+                    newMap[mrow+prow][mcol+pcol] = len(self.buildings)+1
 
-        return State(city, newBuildings, newMap)
+        return State(self.city, newBuildings, newMap)
                 
         
