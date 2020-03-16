@@ -11,3 +11,4 @@ class Building:
         self.plan = buildingProj.plan
         self.locR = locR
         self.locC = locC
+        self.services = []

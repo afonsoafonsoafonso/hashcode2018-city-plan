@@ -53,10 +53,14 @@ bestResidential = get_best_residential(buildingProjs)
 
 initMap = [['.' for col in range(city.cols)] for row in range(city.rows)]
 
-initState = State(city, [], initMap)
+State1 = State(city, [], initMap, 0)
 
+State2 = State1.nextState(buildingProjs[100], 2, 2)
 
-print(bestResidential.plan)
-nextState = initState.nextState(bestResidential, 0, 0)
+State3 = State2.nextState(buildingProjs[1], 500, 2)
 
-print(nextState.map)
+State4 = State3.nextState(buildingProjs[1], 500, 4)
+
+State5 = State4.nextState(buildingProjs[1], 500, 0)
+
+print(State5.score)
