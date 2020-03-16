@@ -36,9 +36,7 @@ class State:
                 if buildingProj.plan[prow][pcol] == '#':
                     for nrow in range(len(map)):
                         for ncol in range(len(map[nrow])):
-                            print(nrow)
-                            print(ncol)
-                            dist = self.calcManhattanDist(prow, pcol, nrow, ncol)
+                            dist = self.calcManhattanDist(prow+mrow, pcol+mcol, nrow, ncol)
                             if dist <= walkd and map[nrow][ncol] != '.':
                                 print(dist)
                                 building_n = int(map[nrow][ncol])
