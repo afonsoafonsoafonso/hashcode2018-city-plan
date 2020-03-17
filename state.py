@@ -9,16 +9,11 @@ class State:
         self.buildings = deepcopy(buildings)
         self.map = deepcopy(map)
         self.score = score
-        # falta criar lista de lsitas com o mapa todo consoante os buildings
         
-    # cria um novo estado e adiciona building ao mapa
     def nextState(self, buildingProj, mrow, mcol):
         newMap = deepcopy(self.map)
-        #print("AWUDNBAWUIDBAWD")
-        #print(self.buildings)
         newBuildings = deepcopy(self.buildings)
         newBuildings.append(Building(buildingProj, mrow, mcol))
-        #print(self.buildings)
 
         for prow in range(buildingProj.rows):
             for pcol in range(buildingProj.cols):
@@ -39,7 +34,7 @@ class State:
                 if buildingProj.plan[prow][pcol] == '#':
                     for nrow in range(-walkd+mrow, walkd+1+mrow):
                         for ncol in range(-(walkd - abs(nrow) + mcol), walkd - abs(nrow) + 1 + mcol):
-                            dist = self.calcManhattanDist(prow+mrow, pcol+mcol, nrow, ncol)
+                            #dist = self.calcManhattanDist(prow+mrow, pcol+mcol, nrow, ncol)
                             if map[nrow][ncol] != '.':
                                 building_n = int(map[nrow][ncol])
                                 if building_n not in visited:

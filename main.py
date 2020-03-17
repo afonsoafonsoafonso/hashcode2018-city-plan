@@ -25,7 +25,6 @@ def parse_file(file_name):
                 row = input_file.readline()
                 row = row.rstrip('\n')
                 plan.append(row)
-                #buildings.append(BuildingProj(vars[0], vars[1], vars[2], vars[3], plan))
                 building = BuildingProj(i, vars[0], vars[1], vars[2], vars[3], plan)
                 if building.type == 'R':
                     if bestR == None:
@@ -47,8 +46,9 @@ start = time.time()
 file_name = sys.argv[1]
 buildingProjs = []
 city, bestR, bestRindex, bestUs = parse_file(file_name)
-
 initMap = [['.' for col in range(city.cols)] for row in range(city.rows)]
+
+state = State()
 
 end = time.time()
 print(end - start)
