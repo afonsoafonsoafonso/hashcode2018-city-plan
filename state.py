@@ -27,7 +27,7 @@ class State:
                         newMap[mrow+prow][mcol+pcol] = len(self.buildings)+1
                     else:
                         return False
-        newScore = self.calculateScore(self.city.walkDist, self.score, self.map, buildingProj, mrow, mcol, self.buildings)
+        newScore = self.calculateScore(self.city.walkDist, self.score, self.map, buildingProj, mrow, mcol, newBuildings)
         return State(self.city, newBuildings, newMap, newScore)
 
     def calculateScore(self, walkd, oldScore, map, buildingProj, mrow, mcol, buildings):
@@ -47,7 +47,7 @@ class State:
                                     foundBuilding = buildings[building_n-1]
                                     if foundBuilding.type == 'R' and buildingProj.type == 'U':
                                         if buildingProj.cenas not in foundBuilding.services:
-                                            foundBuilding.services.append(buildingProj.cenas)
+                                            buildings[building_n-1].services.append(buildingProj.cenas)
                                             score += foundBuilding.cenas         
                                     elif foundBuilding.type == 'U' and buildingProj.type == 'R':
                                         if foundBuilding.cenas not in services:
