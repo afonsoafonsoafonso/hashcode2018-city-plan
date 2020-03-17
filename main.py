@@ -60,7 +60,7 @@ State1 = State(city, [], initMap, 0)
 
 State2 = State1.nextState(buildingProjs[100], 2, 2)
 
-State3 = State2.nextState(buildingProjs[1], 3, 2)
+State3 = State2.nextState(buildingProjs[1], 200, 200)
 
 State4 = State3.nextState(buildingProjs[1], 4, 4)
 

@@ -34,12 +34,10 @@ class State:
         for prow in range(buildingProj.rows):
             for pcol in range(buildingProj.cols):
                 if buildingProj.plan[prow][pcol] == '#':
-                    for nrow in range(-walkd, walkd+1): # AQUI
-                        #ncol = walkd - abs(i)
-                        for ncol in range(-(walkd - abs(nrow)), walkd - abs(nrow) + 1 ): #AQUI
+                    for nrow in range(-walkd+mrow, walkd+1+mrow):
+                        for ncol in range(-(walkd - abs(nrow) + mcol), walkd - abs(nrow) + 1 + mcol):
                             dist = self.calcManhattanDist(prow+mrow, pcol+mcol, nrow, ncol)
-                            if dist <= walkd and map[nrow][ncol] != '.':
-                                #print(dist)
+                            if map[nrow][ncol] != '.':
                                 building_n = int(map[nrow][ncol])
                                 if building_n not in visited:
                                     visited.append(building_n)
