@@ -1,5 +1,6 @@
 class BuildingProj:
-    def __init__(self, type, rows, cols, cenas, plan):
+    def __init__(self, id, type, rows, cols, cenas, plan):
+        self.id = id
         self.type = type
         self.rows = int(rows)
         self.cols = int(cols)
