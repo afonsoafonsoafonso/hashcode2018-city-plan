@@ -22,8 +22,11 @@ class State:
 
         for prow in range(buildingProj.rows):
             for pcol in range(buildingProj.cols):
-                if(buildingProj.plan[prow][pcol] == '#'):
-                    newMap[mrow+prow][mcol+pcol] = len(self.buildings)+1
+                if buildingProj.plan[prow][pcol] == '#':
+                    if newMap[mrow+prow][mcol+pcol] == '.':
+                        newMap[mrow+prow][mcol+pcol] = len(self.buildings)+1
+                    else:
+                        return False
         newScore = self.calculateScore(self.city.walkDist, self.score, self.map, buildingProj, mrow, mcol, self.buildings)
         return State(self.city, newBuildings, newMap, newScore)
 

@@ -55,18 +55,38 @@ city = parse_file(file_name, buildingProjs)
 bestResidential = get_best_residential(buildingProjs)
 
 initMap = [['.' for col in range(city.cols)] for row in range(city.rows)]
-
 State1 = State(city, [], initMap, 0)
+State2 = State1.nextState(buildingProjs[0], 0, 0)
+State3 = State2.nextState(buildingProjs[0], 0, 3)
+if State2 == False:
+    print("Hey! It's false!")
 
+if State3 == False:
+    print("Hey! It's false!")
+"""
+State1 = State(city, [], initMap, 0)
 State2 = State1.nextState(buildingProjs[100], 2, 2)
-
 State3 = State2.nextState(buildingProjs[1], 200, 200)
+State4 = State3.nextState(buildingProjs[1], 123, 543)
+State5 = State4.nextState(buildingProjs[1], 129, 590)
+State6 = State5.nextState(buildingProjs[1], 123, 965)
+State7 = State6.nextState(buildingProjs[1], 14, 740)
+State8 = State7.nextState(buildingProjs[1], 90, 500)
+State9 = State8.nextState(buildingProjs[1], 678, 912)
+State10 = State9.nextState(buildingProjs[1], 405, 45)
+State11 = State10.nextState(buildingProjs[1], 905, 123)
+"""
+""" states = []
+states.append(State(city, [], initMap, 0))
+for i in range(1,200):
+    states.append(states[i-1].nextState(buildingProjs[i-1], i, i))
+    #states[i] = states[i-1].nextState(buildingProjs[i]) """
 
-State4 = State3.nextState(buildingProjs[1], 4, 4)
 
-State5 = State4.nextState(buildingProjs[1], 5, 0)
+
+    
+
 
 end = time.time()
 print(end - start)
-
-print(State5.score)
+#print(states[].score)
