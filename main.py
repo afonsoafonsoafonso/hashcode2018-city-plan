@@ -14,13 +14,13 @@ def hill_climbing(initState, city, buildingProjs, map):
         for ncol in range(len(map[nrow])):
             print(str(nrow) + ',' + str(ncol))
             for proj in buildingProjs:
-                NewState = state.nextState(proj, nrow, ncol)
-                if NewState != False and NewState.score > state.score:
-                    State = NewState
+                newState = state.nextState(proj, nrow, ncol)
+                if newState != False and newState.score > state.score:
+                    state = newState
                     ncol += proj.cols # passar à frente colunas ocupadas pelo novo edificio
                     break
 
-    return State
+    return state
 
 
 
@@ -35,6 +35,7 @@ def parse_file(file_name):
     with open(file_name, 'r') as input_file:
         vars = input_file.readline().split()
         city = City(vars[0], vars[1], vars[2], vars[3])
+        print(vars[2])
         for line in input_file:
             i += 1
             plan = []
@@ -70,11 +71,35 @@ initScore = 0
 initMap = [['.' for col in range(city.cols)] for row in range(city.rows)]
 initState = State(city, [], initMap, initScore)
 
+""" state = initState.nextState(buildingProjs[0], 0, 0)
+print(state.score)
+for row in state.map:
+    print(row)
+state = state.nextState(buildingProjs[len(buildingProjs)-1], 0, 3)
+print(state.score)
+for row in state.map:
+    print(row)
+state = state.nextState(buildingProjs[len(buildingProjs)-1], 28, 28)
+print(state.score)
+for row in state.map:
+    print(row) """
+
+
 finalState = hill_climbing(initState, city, buildingProjs, initMap)
 
 print(finalState.score)
-for row in finalState.map:
-    print(row)
+for rown in range(len(finalState.map)):
+    print('\n', end='')
+    for coln in range(len(finalState.map[0])):
+        if finalState.map[rown][coln] == '.':
+            print('...|', end='')
+        else:
+            print(finalState.buildings[int(finalState.map[rown][coln])-1].type, end='')
+            print(str(finalState.buildings[int(finalState.map[rown][coln])-1].cenas).zfill(2), end='')
+            print('|', end='')
+
+
+
 
 end = time.time()
 print(end - start)

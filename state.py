@@ -19,7 +19,7 @@ class State:
             for pcol in range(buildingProj.cols):
                 if buildingProj.plan[prow][pcol] == '#':
                     if mrow + prow >= len(newMap) or mcol + pcol >= len(newMap[mrow + prow]):
-                        break
+                        return False
                     if newMap[mrow+prow][mcol+pcol] == '.':
                         newMap[mrow+prow][mcol+pcol] = len(self.buildings)+1
                     else:
@@ -28,6 +28,7 @@ class State:
         return State(self.city, newBuildings, newMap, newScore)
 
     def calculateScore(self, walkd, oldScore, map, buildingProj, mrow, mcol, buildings):
+        print(walkd)
         visited = []
         services = []
         score = oldScore
