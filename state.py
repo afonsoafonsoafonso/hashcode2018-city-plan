@@ -18,6 +18,8 @@ class State:
         for prow in range(buildingProj.rows):
             for pcol in range(buildingProj.cols):
                 if buildingProj.plan[prow][pcol] == '#':
+                    if mrow + prow >= len(newMap) or mcol + pcol >= len(newMap[mrow + prow]):
+                        break
                     if newMap[mrow+prow][mcol+pcol] == '.':
                         newMap[mrow+prow][mcol+pcol] = len(self.buildings)+1
                     else:
@@ -33,8 +35,11 @@ class State:
             for pcol in range(buildingProj.cols):
                 if buildingProj.plan[prow][pcol] == '#':
                     for nrow in range(-walkd+mrow, walkd+1+mrow):
+                        if nrow >= len(map) or nrow < 0:
+                            continue
                         for ncol in range(-(walkd - abs(nrow) + mcol), walkd - abs(nrow) + 1 + mcol):
-                            #dist = self.calcManhattanDist(prow+mrow, pcol+mcol, nrow, ncol)
+                            if ncol >= len(map[nrow]) or ncol < 0:
+                                continue
                             if map[nrow][ncol] != '.':
                                 building_n = int(map[nrow][ncol])
                                 if building_n not in visited:

@@ -6,6 +6,24 @@ from building import Building
 from state import State
 #USAGE: main input_file
 
+def hill_climbing(initState, city, buildingProjs, map):
+    state = initState
+    state = state.nextState(buildingProjs[len(buildingProjs)-1], 0, 0)
+
+    for nrow in range(len(map)):
+        for ncol in range(len(map[nrow])):
+            print(str(nrow) + ',' + str(ncol))
+            for proj in buildingProjs:
+                NewState = state.nextState(proj, nrow, ncol)
+                if NewState != False and NewState.score > state.score:
+                    State = NewState
+                    ncol += proj.cols # passar à frente colunas ocupadas pelo novo edificio
+                    break
+
+    return State
+
+
+
 # returns city object. appends building projects to buildings
 def parse_file(file_name):
     buildings = []
@@ -31,24 +49,32 @@ def parse_file(file_name):
                         bestR = building
                     elif building.ratio > bestR.ratio:
                         bestR = building
-                        bestRindex = i
                 elif building.type == 'U':
                     if building.cenas not in bestUs.keys():
                         bestUs[building.cenas] = building
                     elif building.rows * building.cols < bestUs[building.cenas].rows * bestUs[building.cenas].cols:
                         bestUs[building.cenas] = building
     input_file.close()
-    return city, bestR, bestRindex, bestUs
+    return city, bestR, bestUs.values()
 
 # main
 start = time.time()
 
 file_name = sys.argv[1]
-buildingProjs = []
-city, bestR, bestRindex, bestUs = parse_file(file_name)
-initMap = [['.' for col in range(city.cols)] for row in range(city.rows)]
+city, bestR, bestUs = parse_file(file_name)
+bestUs = list(bestUs)
+bestUs.append(bestR)
+buildingProjs = bestUs
 
-state = State()
+initScore = 0
+initMap = [['.' for col in range(city.cols)] for row in range(city.rows)]
+initState = State(city, [], initMap, initScore)
+
+finalState = hill_climbing(initState, city, buildingProjs, initMap)
+
+print(finalState.score)
+for row in finalState.map:
+    print(row)
 
 end = time.time()
 print(end - start)
