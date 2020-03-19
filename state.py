@@ -25,34 +25,45 @@ class State:
                     else:
                         return False
         newScore = self.calculateScore(self.city.walkDist, self.score, self.map, buildingProj, mrow, mcol, newBuildings)
+        #newBuildings[len(newBuildings)-1].services = services
+        """for n in range(len(newBuildings)):
+            print(str(n))
+            print(newBuildings[n].type)
+            print(newBuildings[n].services)
+            print('~~~~~~~~~~~~~~~~~~') """
         return State(self.city, newBuildings, newMap, newScore)
 
     def calculateScore(self, walkd, oldScore, map, buildingProj, mrow, mcol, buildings):
-        print(walkd)
-        visited = []
-        services = []
-        score = oldScore
-        for prow in range(buildingProj.rows):
-            for pcol in range(buildingProj.cols):
-                if buildingProj.plan[prow][pcol] == '#':
-                    for nrow in range(-walkd+mrow, walkd+1+mrow):
+        visited = [] # edificios construidos já visitados 
+        services = [] # servicos do edificio residencial que esta a ser construido ja encontrados
+        score = oldScore # score a somar
+        for prow in range(buildingProj.rows): # por cada row do projeto do edificio a construir
+            for pcol in range(buildingProj.cols): # por cada col do projeto do edificio a construir
+                print("~~~")
+                if buildingProj.plan[prow][pcol] == '#': # caso exista uma celula ocupada do plano
+                    for nrow in range(-walkd + (mrow + prow), walkd + (mrow+prow)+1): # cenas para aumentar a largura da pesquisa qd menor o comprimento
                         if nrow >= len(map) or nrow < 0:
                             continue
-                        for ncol in range(-(walkd - abs(nrow) + mcol), walkd - abs(nrow) + 1 + mcol):
-                            if ncol >= len(map[nrow]) or ncol < 0:
+                        for ncol in range(-walkd + abs(nrow-mrow-prow) + pcol+mcol, walkd - abs(nrow-mrow-prow) + pcol + mcol + 1):
+                            if ncol >= len(map[nrow]) or ncol < 0 :
+                                continue
+                            print(str(nrow) + ',' + str(ncol))
+                            print('-')
+                            if self.calcManhattanDist(prow+mrow, pcol+mcol, nrow, ncol) > walkd:
                                 continue
                             if map[nrow][ncol] != '.':
                                 building_n = int(map[nrow][ncol])
-                                if building_n not in visited:
+                                if building_n not in visited: # index+1 do building no array dos buildings ja construidos
                                     visited.append(building_n)
-                                    foundBuilding = buildings[building_n-1]
+                                    foundBuilding = buildings[building_n-1] #?
                                     if foundBuilding.type == 'R' and buildingProj.type == 'U':
                                         if buildingProj.cenas not in foundBuilding.services:
-                                            buildings[building_n-1].services.append(buildingProj.cenas)
+                                            foundBuilding.services.append(buildingProj.cenas)
                                             score += foundBuilding.cenas         
                                     elif foundBuilding.type == 'U' and buildingProj.type == 'R':
-                                        if foundBuilding.cenas not in services:
+                                        if foundBuilding.cenas not in buildings[len(buildings)-1].services and foundBuilding.cenas not in services:
                                             services.append(foundBuilding.cenas)
+                                            buildings[len(buildings)-1].services.append(foundBuilding.cenas)
                                             score += buildingProj.cenas
         return score
                 
