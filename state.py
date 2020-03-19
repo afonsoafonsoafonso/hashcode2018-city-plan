@@ -25,12 +25,6 @@ class State:
                     else:
                         return False
         newScore = self.calculateScore(self.city.walkDist, self.score, self.map, buildingProj, mrow, mcol, newBuildings)
-        #newBuildings[len(newBuildings)-1].services = services
-        """for n in range(len(newBuildings)):
-            print(str(n))
-            print(newBuildings[n].type)
-            print(newBuildings[n].services)
-            print('~~~~~~~~~~~~~~~~~~') """
         return State(self.city, newBuildings, newMap, newScore)
 
     def calculateScore(self, walkd, oldScore, map, buildingProj, mrow, mcol, buildings):
@@ -39,7 +33,6 @@ class State:
         score = oldScore # score a somar
         for prow in range(buildingProj.rows): # por cada row do projeto do edificio a construir
             for pcol in range(buildingProj.cols): # por cada col do projeto do edificio a construir
-                print("~~~")
                 if buildingProj.plan[prow][pcol] == '#': # caso exista uma celula ocupada do plano
                     for nrow in range(-walkd + (mrow + prow), walkd + (mrow+prow)+1): # cenas para aumentar a largura da pesquisa qd menor o comprimento
                         if nrow >= len(map) or nrow < 0:
@@ -47,8 +40,6 @@ class State:
                         for ncol in range(-walkd + abs(nrow-mrow-prow) + pcol+mcol, walkd - abs(nrow-mrow-prow) + pcol + mcol + 1):
                             if ncol >= len(map[nrow]) or ncol < 0 :
                                 continue
-                            print(str(nrow) + ',' + str(ncol))
-                            print('-')
                             if self.calcManhattanDist(prow+mrow, pcol+mcol, nrow, ncol) > walkd:
                                 continue
                             if map[nrow][ncol] != '.':
