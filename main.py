@@ -25,18 +25,16 @@ def hill_climbing(initState, city, buildingProjs, map):
 def steepest_ascent(initState, city, buildingProjs, map):
     state = initState
     state = state.nextState(buildingProjs[len(buildingProjs)-1], 0, 0)
+    descendants = []
 
     for nrow in range(len(map)):
         for ncol in range(len(map[nrow])):
             print(str(nrow) + ',' + str(ncol))
-            descendants = []
+            descendants.clear()
             for proj in buildingProjs:
                 newState = state.nextState(proj, nrow, ncol)
                 if newState != False:
-                    #state = newState
                     descendants.append(newState)
-                    #ncol += proj.cols
-                    #break
             descendants.sort(key = lambda x: x.score, reverse=True)
             if len(descendants) > 0:
                 state = descendants[0]
@@ -90,8 +88,8 @@ initScore = 0
 initMap = [['.' for col in range(city.cols)] for row in range(city.rows)]
 initState = State(city, [], initMap, initScore)
 
-#finalState = hill_climbing(initState, city, buildingProjs, initMap)
-finalState = steepest_ascent(initState, city, buildingProjs, initMap)
+finalState = hill_climbing(initState, city, buildingProjs, initMap)
+#finalState = steepest_ascent(initState, city, buildingProjs, initMap)
 
 print(finalState.score)
 for rown in range(len(finalState.map)):
