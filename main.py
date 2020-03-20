@@ -4,7 +4,7 @@ from city import City
 from building_proj import BuildingProj
 from building import Building
 from state import State
-#USAGE: main input_file
+#USAGE: python3 main.py input_file
 
 def hill_climbing(initState, city, buildingProjs, map):
     state = initState
@@ -38,8 +38,6 @@ def steepest_ascent(initState, city, buildingProjs, map):
             descendants.sort(key = lambda x: x.score, reverse=True)
             if len(descendants) > 0:
                 state = descendants[0]
-            
-
     return state
 
 # returns city object. appends building projects to buildings
