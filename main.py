@@ -33,11 +33,12 @@ def steepest_ascent(initState, city, buildingProjs, map):
             descendants.clear()
             for proj in buildingProjs:
                 newState = state.nextState(proj, nrow, ncol)
-                if newState != False:
+                if newState != False and newState.score > state.score:
                     descendants.append(newState)
             descendants.sort(key = lambda x: x.score, reverse=True)
             if len(descendants) > 0:
                 state = descendants[0]
+
     return state
 
 # returns city object. appends building projects to buildings
