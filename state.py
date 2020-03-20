@@ -53,7 +53,7 @@ class State:
                                             score += foundBuilding.cenas         
                                     elif foundBuilding.type == 'U' and buildingProj.type == 'R':
                                         if foundBuilding.cenas not in buildings[len(buildings)-1].services and foundBuilding.cenas not in services:
-                                            services.append(foundBuilding.cenas)
+                                            #services.append(foundBuilding.cenas)
                                             buildings[len(buildings)-1].services.append(foundBuilding.cenas)
                                             score += buildingProj.cenas
         return score

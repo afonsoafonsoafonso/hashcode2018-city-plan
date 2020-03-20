@@ -12,18 +12,37 @@ def hill_climbing(initState, city, buildingProjs, map):
 
     for nrow in range(len(map)):
         for ncol in range(len(map[nrow])):
-            #print(ncol)
-            #print(str(nrow) + ',' + str(ncol))
+            print(str(nrow) + ',' + str(ncol))
             for proj in buildingProjs:
                 newState = state.nextState(proj, nrow, ncol)
                 if newState != False and newState.score > state.score:
                     state = newState
-                    #ncol += proj.cols
+                    ncol += proj.cols
                     break
 
     return state
 
+def steepest_ascent(initState, city, buildingProjs, map):
+    state = initState
+    state = state.nextState(buildingProjs[len(buildingProjs)-1], 0, 0)
 
+    for nrow in range(len(map)):
+        for ncol in range(len(map[nrow])):
+            print(str(nrow) + ',' + str(ncol))
+            descendants = []
+            for proj in buildingProjs:
+                newState = state.nextState(proj, nrow, ncol)
+                if newState != False:
+                    #state = newState
+                    descendants.append(newState)
+                    #ncol += proj.cols
+                    #break
+            descendants.sort(key = lambda x: x.score, reverse=True)
+            if len(descendants) > 0:
+                state = descendants[0]
+            
+
+    return state
 
 # returns city object. appends building projects to buildings
 def parse_file(file_name):
@@ -36,7 +55,6 @@ def parse_file(file_name):
     with open(file_name, 'r') as input_file:
         vars = input_file.readline().split()
         city = City(vars[0], vars[1], vars[2], vars[3])
-        #print(vars[2])
         for line in input_file:
             i += 1
             plan = []
@@ -72,17 +90,18 @@ initScore = 0
 initMap = [['.' for col in range(city.cols)] for row in range(city.rows)]
 initState = State(city, [], initMap, initScore)
 
+#finalState = hill_climbing(initState, city, buildingProjs, initMap)
+finalState = steepest_ascent(initState, city, buildingProjs, initMap)
 
-finalState = hill_climbing(initState, city, buildingProjs, initMap)
 print(finalState.score)
 for rown in range(len(finalState.map)):
     print('\n', end='')
     for coln in range(len(finalState.map[0])):
         if finalState.map[rown][coln] == '.':
-            print('...|', end='')
+            print('....|', end='')
         else:
             print(finalState.buildings[int(finalState.map[rown][coln])-1].type, end='')
-            print(str(finalState.map[rown][coln]).zfill(2), end='')
+            print(str(finalState.map[rown][coln]).zfill(3), end='')
             print('|', end='')
 
 print('\n')
