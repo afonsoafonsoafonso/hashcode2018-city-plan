@@ -40,8 +40,6 @@ class State:
                         for ncol in range(-walkd + abs(nrow-mrow-prow) + pcol+mcol, walkd - abs(nrow-mrow-prow) + pcol + mcol + 1):
                             if ncol >= len(map[nrow]) or ncol < 0 :
                                 continue
-                            if self.calcManhattanDist(prow+mrow, pcol+mcol, nrow, ncol) > walkd:
-                                continue
                             if map[nrow][ncol] != '.':
                                 building_n = int(map[nrow][ncol])
                                 if building_n not in visited: # index+1 do building no array dos buildings ja construidos
