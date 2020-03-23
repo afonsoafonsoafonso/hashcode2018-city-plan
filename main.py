@@ -8,7 +8,7 @@ from algorithms import *
 
 #USAGE: python3 main.py input_file
 
-def parse_file(file_name):
+def d_parse_file(file_name, optimizations):
     buildings = []
     bestUs = {}
     bestRindex = None
@@ -40,10 +40,33 @@ def parse_file(file_name):
     input_file.close()
     return city, bestR, bestUs.values()
 
+def parse_file(file_name):
+    buildings = []
+    i = 0 #235
+    try:
+        with open(file_name, 'r') as input_file:
+            vars = input_file.readline().split()
+            city = City(vars[0], vars[1], vars[2], vars[3])
+            for line in input_file:
+                i += 1
+                plan = []
+                vars = line.split()
+                for nrow in range(int(vars[1])):
+                    row = input_file.readline()
+                    row = row.rstrip('\n')
+                    plan.append(row)
+                buildings.append(BuildingProj(i, vars[0], vars[1], vars[2], vars[3], plan))
+
+        input_file.close()
+        return city, buildings 
+    except:
+        print("Error opening or parsing file.")
+        raise SystemExit
+    
 # main
 start = time.time()
 
-file_name = sys.argv[1]
+""" file_name = sys.argv[1]
 city, bestR, bestUs = parse_file(file_name)
 bestUs = list(bestUs)
 bestUs.append(bestR)
@@ -51,11 +74,17 @@ buildingProjs = bestUs
 
 initScore = 0
 initMap = [['.' for col in range(city.cols)] for row in range(city.rows)]
-initState = State(city, [], initMap, initScore)
+initState = State(city, [], initMap, initScore) """
 
-#finalState = hill_climbing(initState, city, buildingProjs, initMap)
-#finalState = steepest_ascent(initState, city, buildingProjs, initMap)
-finalState = hill_climbing_random(initState, city, buildingProjs, initMap)
+file_name = sys.argv[1]
+city, buildingProjs = parse_file(file_name)
+initMap = [['.' for col in range(city.cols)] for row in range(city.rows)]
+initState = State(city, [], initMap, 0)
+
+
+finalState = d_hill_climbing(initState, city, buildingProjs, initMap)
+#finalState = d_steepest_ascent(initState, city, buildingProjs, initMap)
+#finalState = d_hill_climbing_random(initState, city, buildingProjs, initMap)
 
 print(finalState.score)
 for rown in range(len(finalState.map)):

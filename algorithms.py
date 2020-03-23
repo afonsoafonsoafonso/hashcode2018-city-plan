@@ -1,6 +1,6 @@
 import random
 
-def hill_climbing(initState, city, buildingProjs, map):
+def d_hill_climbing(initState, city, buildingProjs, map):
     state = initState
     state = state.nextState(buildingProjs[len(buildingProjs)-1], 0, 0)
 
@@ -16,7 +16,7 @@ def hill_climbing(initState, city, buildingProjs, map):
 
     return state
 
-def steepest_ascent(initState, city, buildingProjs, map):
+def d_steepest_ascent(initState, city, buildingProjs, map):
     state = initState
     state = state.nextState(buildingProjs[len(buildingProjs)-1], 0, 0)
     descendants = []
@@ -35,7 +35,7 @@ def steepest_ascent(initState, city, buildingProjs, map):
 
     return state
 
-def hill_climbing_random(initState, city, buildingProjs, map):
+def d_hill_climbing_random(initState, city, buildingProjs, map):
     state = initState
     state = state.nextState(buildingProjs[len(buildingProjs)-1], 0, 0)
     descendants = []
@@ -46,7 +46,7 @@ def hill_climbing_random(initState, city, buildingProjs, map):
             descendants.clear()
             for proj in buildingProjs:
                 newState = state.nextState(proj, nrow, ncol)
-                if newState != False and newState.score > state.score:
+                if newState != False:
                     descendants.append(newState)
 
             if len(descendants) > 0:
