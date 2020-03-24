@@ -19,11 +19,11 @@ initState = State(city, [], initMap, 0)
 #finalState = hill_climbing(initState, city, buildingProjs, initMap)
 finalState = d_steepest_ascent(initState, city, buildingProjs, initMap)
 #finalState = d_hill_climbing_random(initState, city, buildingProjs, initMap)
-
 print_map(finalState)
+
+state = finalState.replace_building(2, buildingProjs[1])
+print_map(state)
 
 print('\n')
 end = time.time()
 print(end - start)
-
-print_map(finalState.remove_building(finalState.buildings[0]))

@@ -67,7 +67,7 @@ def remove_from_map(map, building):
     for prow in range(building.rows):
         for pcol in range(building.cols):
             if plan[prow][pcol] == '#':
-                new_map[prow+building.locR][pcol+building.locC] = '.'
+                new_map[prow+building.mrow][pcol+building.mcol] = '.'
     return new_map
 
 ######## DEPRECATED #########
