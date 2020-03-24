@@ -2,6 +2,7 @@ from city import City
 from building_proj import BuildingProj
 from building import Building
 from copy import deepcopy
+from utils import remove_from_map
 
 class State:
     def __init__(self, city, buildings, map, score):
@@ -25,6 +26,8 @@ class State:
                     else:
                         return False
         newScore = self.calculateScore(self.city.walkDist, self.score, self.map, buildingProj, mrow, mcol, newBuildings)
+        print("BUILDING SCORE=" + str(newScore - self.score))
+        newBuildings[-1].score = newScore - self.score
         return State(self.city, newBuildings, newMap, newScore)
 
     def calculateScore(self, walkd, oldScore, map, buildingProj, mrow, mcol, buildings):
@@ -50,11 +53,26 @@ class State:
                                             foundBuilding.services.append(buildingProj.cenas)
                                             score += foundBuilding.cenas         
                                     elif foundBuilding.type == 'U' and buildingProj.type == 'R':
-                                        if foundBuilding.cenas not in buildings[len(buildings)-1].services and foundBuilding.cenas not in services:
+                                        if foundBuilding.cenas not in buildings[-1].services and foundBuilding.cenas not in services:
                                             #services.append(foundBuilding.cenas)
-                                            buildings[len(buildings)-1].services.append(foundBuilding.cenas)
+                                            buildings[-1].services.append(foundBuilding.cenas)
                                             score += buildingProj.cenas
         return score
-                
-    def calcManhattanDist(self, row1, col1, row2, col2):
-        return ( abs(row2 - row1) + abs(col2 - col1) )
+
+    def remove_building(self, building):
+        new_buildings = deepcopy(self.buildings)
+        new_map = deepcopy(self.map)
+
+        if isinstance(building, int): # if int: building == index
+            removed = new_buildings[building]
+            id = building
+            del new_buildings[building]
+        
+        elif isinstance(building, Building): # if Building: building == object
+            removed = building
+            new_buildings.remove(building)
+
+        new_score = self.score - removed.score
+        new_map = remove_from_map(self.map, removed)
+
+        return State(self.city, new_buildings, new_map, new_score)

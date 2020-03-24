@@ -10,3 +10,10 @@ class Building:
         self.locR = locR
         self.locC = locC
         self.services = []
+        self.score = None
+
+    def __eq__(self, other):
+        if self.projId == other.projId and self.locR == other.locR and self.locC == other.locC:
+            return True
+        else:
+             False

@@ -1,14 +1,15 @@
 import sys
 import time
+import random
+from copy import deepcopy
 from city import City
 from building_proj import BuildingProj
 from building import Building
-from state import State
 from algorithms import *
 
 def parse_file(file_name):
     buildings = []
-    i = 0 #235
+    i = 0
     try:
         with open(file_name, 'r') as input_file:
             vars = input_file.readline().split()
@@ -36,7 +37,7 @@ def get_random_solution(initState, city, buildingProjs, map):
 
     for nrow in range(len(map)):
         for ncol in range(len(map[nrow])):
-            print(str(nrow) + ',' + str(ncol))
+            #print(str(nrow) + ',' + str(ncol))
             descendants.clear()
             for proj in buildingProjs:
                 newState = state.nextState(proj, nrow, ncol)
@@ -60,9 +61,18 @@ def print_map(finalState):
                 print(str(finalState.map[rown][coln]).zfill(3), end='')
                 print('|', end='')
 
+def remove_from_map(map, building):
+    new_map = deepcopy(map)
+    plan = building.plan
+    for prow in range(building.rows):
+        for pcol in range(building.cols):
+            if plan[prow][pcol] == '#':
+                new_map[prow+building.locR][pcol+building.locC] = '.'
+    return new_map
+
 ######## DEPRECATED #########
 
-def parse_file(file_name):
+def d_parse_file(file_name):
     buildings = []
     bestUs = {}
     bestRindex = None

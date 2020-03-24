@@ -3,14 +3,21 @@ import time
 from city import City
 from building_proj import BuildingProj
 from building import Building
-from state import State
-from algorithms import *
+from utils import *
+
+#como se escolhe o vizinho a verificar? para já está a ser escolhido um à toa
+# e se for melhor está feito
+def hill_climbing(initState, city, buildingProjs, map):
+    state = get_random_solution(initState, city, buildingProjs, map)
+    random_building = random.choice(state.buildings)
+    for building in buildingProjs:
+        newMap = remove_from_map(state.map, random_building)
 
 ######## DEPRECATED #########
 
 def d_hill_climbing(initState, city, buildingProjs, map):
     state = initState
-    state = state.nextState(buildingProjs[len(buildingProjs)-1], 0, 0)
+    state = state.nextState(buildingProjs[-1], 0, 0)
 
     for nrow in range(len(map)):
         for ncol in range(len(map[nrow])):
@@ -26,12 +33,12 @@ def d_hill_climbing(initState, city, buildingProjs, map):
 
 def d_steepest_ascent(initState, city, buildingProjs, map):
     state = initState
-    state = state.nextState(buildingProjs[len(buildingProjs)-1], 0, 0)
+    state = state.nextState(buildingProjs[-1], 0, 0)
     descendants = []
 
     for nrow in range(len(map)):
         for ncol in range(len(map[nrow])):
-            print(str(nrow) + ',' + str(ncol))
+            #print(str(nrow) + ',' + str(ncol))
             descendants.clear()
             for proj in buildingProjs:
                 newState = state.nextState(proj, nrow, ncol)
@@ -45,7 +52,7 @@ def d_steepest_ascent(initState, city, buildingProjs, map):
 
 def d_hill_climbing_random(initState, city, buildingProjs, map):
     state = initState
-    state = state.nextState(buildingProjs[len(buildingProjs)-1], 0, 0)
+    state = state.nextState(buildingProjs[-1], 0, 0)
     descendants = []
 
     for nrow in range(len(map)):
