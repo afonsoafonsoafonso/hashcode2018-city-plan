@@ -9,22 +9,24 @@ from algorithms import *
 
 #USAGE: python3 main.py input_file
     
-start = time.time()
-
 file_name = sys.argv[1]
 city, buildingProjs = parse_file(file_name)
 initMap = [['.' for col in range(city.cols)] for row in range(city.rows)]
 emptyState = State(city, [], initMap, 0)
+initSol = get_random_solution(emptyState, city, buildingProjs, initMap)
 
-#finalState = hill_climbing(initState, city, buildingProjs, initMap)
-#finalState = d_steepest_ascent(initState, city, buildingProjs, initMap)
-#finalState = d_hill_climbing_random(initState, city, buildingProjs, initMap)
-finalState = hill_climbing(emptyState, city, buildingProjs, initMap)
-print_map(finalState)
-
-""" state = finalState.replace_building(2, buildingProjs[1])
-print_map(state) """
-
-print('\n')
+start = time.time()
+finalState = hill_climbing(deepcopy(initSol), buildingProjs)
 end = time.time()
+print(finalState.score)
 print(end - start)
+
+print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
+
+start = time.time()
+finalState = steepest_ascent(deepcopy(initSol), buildingProjs)
+end = time.time()
+print(finalState.score)
+print(end - start)
+
+#print_map(finalState)

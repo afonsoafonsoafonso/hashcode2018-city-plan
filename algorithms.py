@@ -3,10 +3,23 @@ from utils import get_random_solution
 
 #como se escolhe o vizinho a verificar? para já está a ser escolhido um à toa
 # e se for melhor está feito
-def hill_climbing(emptyState, city, buildingProjs, emptyMap):
-    state = get_random_solution(emptyState, city, buildingProjs, emptyMap)
+def hill_climbing(initSol, buildingProjs):
+    state = initSol
+    for it in range(0,1000):
+        random_building_index = randrange(0, len(state.buildings))
+        random_building = state.buildings[random_building_index]
+        for buildingProj in buildingProjs:
+            newState = state.replace_building(random_building_index, buildingProj)
+            if newState != False and newState.score > state.score:
+                state = newState
+                break
 
-    for it in range(0,200):
+    return state
+
+def steepest_ascent(initSol, buildingProjs):
+    state = initSol
+    neighbourStates = []
+    for it in range(0,1000):
         random_building_index = randrange(0, len(state.buildings))
         random_building = state.buildings[random_building_index]
         for buildingProj in buildingProjs:

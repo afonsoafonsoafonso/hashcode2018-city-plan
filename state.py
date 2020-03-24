@@ -27,7 +27,6 @@ class State:
                     else:
                         return False
         newScore = self.calculateScore(self.city.walkDist, self.score, self.map, buildingProj, mrow, mcol, newBuildings)
-        print("BUILDING SCORE=" + str(newScore - self.score))
         newBuildings[-1].score = newScore - self.score
         return State(self.city, newBuildings, newMap, newScore)
 
