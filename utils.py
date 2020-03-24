@@ -5,7 +5,6 @@ from copy import deepcopy
 from city import City
 from building_proj import BuildingProj
 from building import Building
-from algorithms import *
 
 def parse_file(file_name):
     buildings = []

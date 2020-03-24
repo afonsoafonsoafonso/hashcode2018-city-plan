@@ -82,9 +82,9 @@ class State:
         # copiar buildings e substituir building a ser substituito pelo novo mas com o mesmo buildingId
         newBuildings = deepcopy(self.buildings)
         newBuildings[index] = Building(buildingProj, mrow, mcol, building.buildingId)
-        # calcular score usando a mesma idade, tirando do score o contributo do edificio removido, etc etc e no fim 
+        # calcular score usando a mesma cidade, tirando do score o contributo do edificio removido, etc etc e no fim 
         # parametro opcional para passar index do novo building na lista dos buildings
         newScore = self.calculateScore(self.city.walkDist, self.score - building.score, newMap, buildingProj, mrow, mcol, newBuildings, building.buildingId-1)
-
+        newBuildings[index].score = newScore - (self.score - building.score)
 
         return State(self.city, newBuildings, newMap, newScore)

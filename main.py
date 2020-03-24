@@ -4,8 +4,8 @@ from city import City
 from building_proj import BuildingProj
 from building import Building
 from state import State
-from algorithms import *
 from utils import *
+from algorithms import *
 
 #USAGE: python3 main.py input_file
     
@@ -14,15 +14,16 @@ start = time.time()
 file_name = sys.argv[1]
 city, buildingProjs = parse_file(file_name)
 initMap = [['.' for col in range(city.cols)] for row in range(city.rows)]
-initState = State(city, [], initMap, 0)
+emptyState = State(city, [], initMap, 0)
 
 #finalState = hill_climbing(initState, city, buildingProjs, initMap)
-finalState = d_steepest_ascent(initState, city, buildingProjs, initMap)
+#finalState = d_steepest_ascent(initState, city, buildingProjs, initMap)
 #finalState = d_hill_climbing_random(initState, city, buildingProjs, initMap)
+finalState = hill_climbing(emptyState, city, buildingProjs, initMap)
 print_map(finalState)
 
-state = finalState.replace_building(2, buildingProjs[1])
-print_map(state)
+""" state = finalState.replace_building(2, buildingProjs[1])
+print_map(state) """
 
 print('\n')
 end = time.time()

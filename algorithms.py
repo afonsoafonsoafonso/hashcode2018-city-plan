@@ -1,17 +1,21 @@
-import sys
-import time
-from city import City
-from building_proj import BuildingProj
-from building import Building
-from utils import *
+from random import randrange
+from utils import get_random_solution
 
 #como se escolhe o vizinho a verificar? para já está a ser escolhido um à toa
 # e se for melhor está feito
-def hill_climbing(initState, city, buildingProjs, map):
-    state = get_random_solution(initState, city, buildingProjs, map)
-    random_building = random.choice(state.buildings)
-    for building in buildingProjs:
-        newMap = remove_from_map(state.map, random_building)
+def hill_climbing(emptyState, city, buildingProjs, emptyMap):
+    state = get_random_solution(emptyState, city, buildingProjs, emptyMap)
+
+    for it in range(0,200):
+        random_building_index = randrange(0, len(state.buildings))
+        random_building = state.buildings[random_building_index]
+        for buildingProj in buildingProjs:
+            newState = state.replace_building(random_building_index, buildingProj)
+            if newState != False and newState.score > state.score:
+                state = newState
+
+    return state
+        
 
 ######## DEPRECATED #########
 
