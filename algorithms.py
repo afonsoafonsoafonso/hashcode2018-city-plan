@@ -43,12 +43,32 @@ def simulated_annealing(colFactor, initSol, buildingProjs):
         for buildingProj in buildingProjs:
             newState = state.replace_building(random_building_index, buildingProj)
             if newState != False:
-                diff = newState.score - state.score
-                if diff > 0 or T/1000 > uniform(0,1):
+                if newState.score > state.score or T/1000 > uniform(0,1):
                     state = newState
                     break
     print("i:" + str(i))
     return state
+
+# critério de proíbição:
+# proíbido voltar a ver possíveis vizinhos de um certo estado (aka ver
+# alternativas a certo edificio) se isto já foi feito
+# nas últimas tab_list_size iterações
+def tabu_search(tab_list_size, init_sol, building_projs):
+    tabu_list = []
+    state = init_sol
+    for it in range(0, 1379):
+        random_building_index = randrange(0, len(state.buildings))
+        random_building = state.buildings[random_building_index]
+        for building_proj in building_projs:
+            newState = state.replace_building(random_building_index, building_proj)
+            if newState != False and (random_building.mrow, random_building.mcol) not in tabu_list:
+                if newState.score > state.score:
+                    if len(tabu_list) == tab_list_size:
+                        tabu_list.pop()
+                    tabu_list.append((random_building.mrow, random_building.mcol))
+                    state = newState
+    return state
+
         
 
 ######## DEPRECATED #########
