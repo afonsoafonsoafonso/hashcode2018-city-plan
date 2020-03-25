@@ -16,11 +16,40 @@ emptyState = State(city, [], initMap, 0)
 initSol = get_random_solution(emptyState, city, buildingProjs, initMap)
 
 start = time.time()
+finalState = tabu_search(15, initSol, buildingProjs)
+end = time.time()
+print(finalState.score)
+#print_map(finalState)
+print(end - start)
+
+print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
+
+start = time.time()
+finalState = tabu_search(30, initSol, buildingProjs)
+end = time.time()
+print(finalState.score)
+#print_map(finalState)
+print(end - start)
+
+print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
+
+start = time.time()
+finalState = tabu_search(50, initSol, buildingProjs)
+end = time.time()
+print(finalState.score)
+#print_map(finalState)
+print(end - start)
+
+print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
+
+start = time.time()
 finalState = simulated_annealing(0.995, initSol, buildingProjs)
 end = time.time()
 print(finalState.score)
-print_map(finalState)
+#print_map(finalState)
 print(end - start)
+
+print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
 
 start = time.time()
 finalState = hill_climbing(deepcopy(initSol), buildingProjs)
