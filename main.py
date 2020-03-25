@@ -15,7 +15,7 @@ init_map = [['.' for col in range(city.cols)] for row in range(city.rows)]
 empty_state = State(city, [], init_map, 0)
 init_sol = getRandomSolution(empty_state, city, building_projs, init_map)
 
-start = time.time()
+""" start = time.time()
 final_state = tabuSearch(15, init_sol, building_projs)
 end = time.time()
 print(final_state.score)
@@ -47,7 +47,7 @@ final_state = simulatedAnnealing(0.995, init_sol, building_projs)
 end = time.time()
 print(final_state.score)
 #print_map(final_state)
-print(end - start)
+print(end - start) """
 
 print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
 
@@ -65,7 +65,7 @@ end = time.time()
 print(final_state.score)
 print(end - start)
 
-""" print("\n\n#2")
+print("\n\n#2")
 
 start = time.time()
 final_state = hillClimbing(deepcopy(init_sol), building_projs)
@@ -127,6 +127,4 @@ start = time.time()
 final_state = steepestAscent(deepcopy(init_sol), building_projs)
 end = time.time()
 print(final_state.score)
-print(end - start) """
-
-#print_map(final_state) """
+print(end - start)
