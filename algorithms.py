@@ -1,50 +1,49 @@
 from random import randrange, uniform
 from math import e
-from utils import get_random_solution
 
 #como se escolhe o vizinho a verificar? para já está a ser escolhido um à toa
 # e se for melhor está feito
-def hill_climbing(initSol, buildingProjs):
-    state = initSol
+def hillClimbing(init_sol, building_projs):
+    state = init_sol
     for it in range(0,1379):
         random_building_index = randrange(0, len(state.buildings))
         random_building = state.buildings[random_building_index]
-        for buildingProj in buildingProjs:
-            newState = state.replace_building(random_building_index, buildingProj)
-            if newState != False and newState.score > state.score:
-                state = newState
+        for building_proj in building_projs:
+            new_state = state.replaceBuilding(random_building_index, building_proj)
+            if new_state != False and new_state.score > state.score:
+                state = new_state
                 break
 
     return state
 
-def steepest_ascent(initSol, buildingProjs):
-    state = initSol
+def steepestAscent(init_sol, building_projs):
+    state = init_sol
     for it in range(0,1379):
         random_building_index = randrange(0, len(state.buildings))
         random_building = state.buildings[random_building_index]
-        for buildingProj in buildingProjs:
-            newState = state.replace_building(random_building_index, buildingProj)
-            if newState != False and newState.score > state.score:
-                state = newState
+        for building_proj in building_projs:
+            new_state = state.replaceBuilding(random_building_index, building_proj)
+            if new_state != False and new_state.score > state.score:
+                state = new_state
 
     return state
 
-def simulated_annealing(colFactor, initSol, buildingProjs):
-    initT = 1000
-    endT = 1
-    state = initSol
-    T = initT
+def simulatedAnnealing(colFactor, init_sol, building_projs):
+    init_t = 1000
+    end_t = 1
+    state = init_sol
+    t = init_t
     i = 0
-    while T > endT:
+    while t > end_t:
         i += 1
-        T *= colFactor
+        t *= colFactor
         random_building_index = randrange(0, len(state.buildings))
         random_building = state.buildings[random_building_index]
-        for buildingProj in buildingProjs:
-            newState = state.replace_building(random_building_index, buildingProj)
-            if newState != False:
-                if newState.score > state.score or T/1000 > uniform(0,1):
-                    state = newState
+        for building_proj in building_projs:
+            new_state = state.replaceBuilding(random_building_index, building_proj)
+            if new_state != False:
+                if new_state.score > state.score or t/1000 > uniform(0,1):
+                    state = new_state
                     break
     print("i:" + str(i))
     return state
@@ -53,81 +52,23 @@ def simulated_annealing(colFactor, initSol, buildingProjs):
 # proíbido voltar a ver possíveis vizinhos de um certo estado (aka ver
 # alternativas a certo edificio) se isto já foi feito
 # nas últimas tab_list_size iterações
-def tabu_search(tab_list_size, init_sol, building_projs):
-    T = 1000
-    endT = 1
+def tabuSearch(tab_list_size, init_sol, building_projs):
+    t = 1000
+    end_t = 1
     col_factor = 0.995
 
     tabu_list = []
     state = init_sol
-    while T > endT:
-        T *= col_factor
+    while t > end_t:
+        t *= col_factor
         random_building_index = randrange(0, len(state.buildings))
         random_building = state.buildings[random_building_index]
         for building_proj in building_projs:
-            newState = state.replace_building(random_building_index, building_proj)
-            if newState != False and (random_building.mrow, random_building.mcol) not in tabu_list:
-                if newState.score > state.score or T/1000 > uniform(0,1):
+            new_state = state.replaceBuilding(random_building_index, building_proj)
+            if new_state != False and (random_building.mrow, random_building.mcol) not in tabu_list:
+                if new_state.score > state.score or t/1000 > uniform(0,1):
                     if len(tabu_list) == tab_list_size:
                         tabu_list.pop(0)
                     tabu_list.append((random_building.mrow, random_building.mcol))
-                    state = newState
-    return state
-
-        
-
-######## DEPRECATED #########
-
-def d_hill_climbing(initState, city, buildingProjs, map):
-    state = initState
-    state = state.nextState(buildingProjs[-1], 0, 0)
-
-    for nrow in range(len(map)):
-        for ncol in range(len(map[nrow])):
-            print(str(nrow) + ',' + str(ncol))
-            for proj in buildingProjs:
-                newState = state.nextState(proj, nrow, ncol)
-                if newState != False and newState.score > state.score:
-                    state = newState
-                    ncol += proj.cols
-                    break
-
-    return state
-
-def d_steepest_ascent(initState, city, buildingProjs, map):
-    state = initState
-    state = state.nextState(buildingProjs[-1], 0, 0)
-    descendants = []
-
-    for nrow in range(len(map)):
-        for ncol in range(len(map[nrow])):
-            #print(str(nrow) + ',' + str(ncol))
-            descendants.clear()
-            for proj in buildingProjs:
-                newState = state.nextState(proj, nrow, ncol)
-                if newState != False and newState.score > state.score:
-                    descendants.append(newState)
-            descendants.sort(key = lambda x: x.score, reverse=True)
-            if len(descendants) > 0:
-                state = descendants[0]
-
-    return state
-
-def d_hill_climbing_random(initState, city, buildingProjs, map):
-    state = initState
-    state = state.nextState(buildingProjs[-1], 0, 0)
-    descendants = []
-
-    for nrow in range(len(map)):
-        for ncol in range(len(map[nrow])):
-            print(str(nrow) + ',' + str(ncol))
-            descendants.clear()
-            for proj in buildingProjs:
-                newState = state.nextState(proj, nrow, ncol)
-                if newState != False:
-                    descendants.append(newState)
-
-            if len(descendants) > 0:
-                state = random.choice(descendants)
-
+                    state = new_state
     return state
