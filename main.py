@@ -16,6 +16,13 @@ emptyState = State(city, [], initMap, 0)
 initSol = get_random_solution(emptyState, city, buildingProjs, initMap)
 
 start = time.time()
+finalState = simulated_annealing(0.995, initSol, buildingProjs)
+end = time.time()
+print(finalState.score)
+print_map(finalState)
+print(end - start)
+
+start = time.time()
 finalState = hill_climbing(deepcopy(initSol), buildingProjs)
 end = time.time()
 print(finalState.score)
@@ -29,4 +36,68 @@ end = time.time()
 print(finalState.score)
 print(end - start)
 
-#print_map(finalState)
+""" print("\n\n#2")
+
+start = time.time()
+finalState = hill_climbing(deepcopy(initSol), buildingProjs)
+end = time.time()
+print(finalState.score)
+print(end - start)
+
+print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
+
+start = time.time()
+finalState = steepest_ascent(deepcopy(initSol), buildingProjs)
+end = time.time()
+print(finalState.score)
+print(end - start)
+
+print("\n\n#3")
+
+start = time.time()
+finalState = hill_climbing(deepcopy(initSol), buildingProjs)
+end = time.time()
+print(finalState.score)
+print(end - start)
+
+print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
+
+start = time.time()
+finalState = steepest_ascent(deepcopy(initSol), buildingProjs)
+end = time.time()
+print(finalState.score)
+print(end - start)
+
+print("\n\n#4")
+
+start = time.time()
+finalState = hill_climbing(deepcopy(initSol), buildingProjs)
+end = time.time()
+print(finalState.score)
+print(end - start)
+
+print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
+
+start = time.time()
+finalState = steepest_ascent(deepcopy(initSol), buildingProjs)
+end = time.time()
+print(finalState.score)
+print(end - start)
+
+print("\n\n#5")
+
+start = time.time()
+finalState = hill_climbing(deepcopy(initSol), buildingProjs)
+end = time.time()
+print(finalState.score)
+print(end - start)
+
+print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
+
+start = time.time()
+finalState = steepest_ascent(deepcopy(initSol), buildingProjs)
+end = time.time()
+print(finalState.score)
+print(end - start) """
+
+#print_map(finalState) """
