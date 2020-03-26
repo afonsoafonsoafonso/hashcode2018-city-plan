@@ -134,7 +134,6 @@ def crossover(parent1, parent2, building_projs):
 def mutation(seed,building_projs):
     for x in range (len(seed.buildings)):
         r = randrange(1,101)    
-        print(r)
         if r <= 3:
             random_building_index = randrange(0, len(building_projs))
             random_building = building_projs[random_building_index]
