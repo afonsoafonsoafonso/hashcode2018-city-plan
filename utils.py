@@ -14,7 +14,6 @@ def parseFile(file_name):
             vars = input_file.readline().split()
             city = City(vars[0], vars[1], vars[2], vars[3])
             for line in input_file:
-                i += 1
                 plan = []
                 vars = line.split()
                 for nrow in range(int(vars[1])):
@@ -22,6 +21,7 @@ def parseFile(file_name):
                     row = row.rstrip('\n')
                     plan.append(row)
                 buildings.append(BuildingProj(i, vars[0], vars[1], vars[2], vars[3], plan))
+                i += 1
 
         input_file.close()
         return city, buildings 
