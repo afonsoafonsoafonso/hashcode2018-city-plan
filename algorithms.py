@@ -1,5 +1,6 @@
 from random import randrange, uniform
 from math import e
+from copy import deepcopy
 
 HC_MAX_TRIES = 5
 SA_MAX_TRIES = 5
@@ -89,3 +90,39 @@ def tabuSearch(tab_list_size, init_sol, building_projs):
                     tabu_list.append((random_building.mrow, random_building.mcol))
                     state = new_state
     return state
+
+def genetic(init_sol, init_sol2, iter):
+    if init_sol.score > init_sol2.score:
+        state = deepcopy(init_sol)
+    else:
+        state = deepcopy(init_sol2)
+    
+    parent1 = deepcopy(init_sol)
+    parent2 = deepcopy(init_sol2)
+
+    for _ in range(iter):
+        parent1,parent2 = crossover(parent1, parent2)
+        
+        #Saving the best descent of each iteration if they are better than the anterior
+        if parent1.score > parent2.score and parent1.score > state.score:
+            state = parent1
+        elif parent2.score >= parent1.score and parent2.score > state.score: 
+            state = parent2
+    
+    return state # return the overall best descendent
+    
+def crossover(parent1, parent2):
+    random_first_indexA = randrange(0, len(parent1.buildings)-2)
+    random_last_indexA = randrange(random_first_indexA, len(parent2.buildings)-1)
+    
+    descendent1 = deepcopy(parent1)
+    descendent2 = deepcopy(parent2)        
+
+    for i in range(random_first_indexA, random_last_indexA):
+        newState1 = descendent1.replaceBuilding(i, parent1.buildings[i])
+        newState2 = descendent2.replaceBuilding(i, parent2.buildings[i])
+        if newState1 != False and newState2 != False:
+            descendent1 = newState1
+            descendent2 = newState2
+            
+    return descendent1, descendent2

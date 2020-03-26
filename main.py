@@ -14,7 +14,7 @@ city, building_projs = parseFile(file_name)
 init_map = [['.' for col in range(city.cols)] for row in range(city.rows)]
 empty_state = State(city, [], init_map, 0)
 init_sol = getRandomSolution(empty_state, city, building_projs, init_map)
-
+init_sol2 = getRandomSolution(empty_state, city, building_projs, init_map)
 """ start = time.time()
 final_state = tabuSearch(15, init_sol, building_projs)
 end = time.time()
@@ -48,7 +48,7 @@ end = time.time()
 print(final_state.score)
 #print_map(final_state)
 print(end - start) """
-
+"""
 print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
 
 start = time.time()
@@ -125,6 +125,15 @@ print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
 
 start = time.time()
 final_state = steepestAscent(deepcopy(init_sol), building_projs)
+end = time.time()
+print(final_state.score)
+print(end - start)
+
+print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
+"""
+
+start = time.time()
+final_state = genetic(deepcopy(init_sol), deepcopy(init_sol2), 5)
 end = time.time()
 print(final_state.score)
 print(end - start)
