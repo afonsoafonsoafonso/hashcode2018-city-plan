@@ -91,27 +91,40 @@ def tabuSearch(tab_list_size, init_sol, building_projs):
                     state = new_state
     return state
 
-def genetic(init_sol, init_sol2, iter, building_projs):
-    if init_sol.score > init_sol2.score:
-        state = deepcopy(init_sol)
-    else:
-        state = deepcopy(init_sol2)
+def genetic(sols, iter, building_projs):
+    state = sols[0]
+    for i in range(1,len(sols)):
+        if sols[i].score > state.score:
+            score = deepcopy(sols[i])
     
-    parent1 = deepcopy(init_sol)
-    parent2 = deepcopy(init_sol2)
+    parent1 = deepcopy(sols[0])
+    parent2 = deepcopy(sols[1])
+    parent3 = deepcopy(sols[2])
 
     for _ in range(iter):
-        parent1,parent2 = crossover(parent1, parent2, building_projs)
-        parent1 = mutation(parent1, building_projs)
-        parent2 = mutation(parent2, building_projs)
+        #crossover
+        child1 = crossover(parent1, parent2, building_projs)
+        child2 = crossover(parent2, parent3, building_projs)
+        child3 = crossover(parent1, parent3, building_projs)
+        #mutation
+        child1 = mutation(child1, building_projs)
+        child2 = mutation(child2, building_projs)
+        child3 = mutation(child3, building_projs)
         
         #Saving the best descent of each iteration if they are better than the anterior
-        if parent1.score > parent2.score and parent1.score > state.score:
-            state = parent1
-        elif parent2.score >= parent1.score and parent2.score > state.score: 
-            state = parent2
-    
-    return state # return the overall best descendent
+        if child1.score >= child2.score and child1.score >= child3.score and child1.score >= state.score:
+            state = child1
+        elif child2.score > child1.score and child2.score > child3.score and child2.score > state.score:
+            state = child2
+        elif child3.score > child1.score and child3.score > child2.score and child3.score > state.score:
+            state = child3
+
+        #childs become parents in the next iteration
+        parent1=child1
+        parent2=child2
+        parent3=child3
+
+    return state #return the overall best descendent
     
 def crossover(parent1, parent2, building_projs):
     if len(parent1.buildings) <= len(parent2.buildings):
@@ -126,7 +139,6 @@ def crossover(parent1, parent2, building_projs):
     descendent2 = deepcopy(parent2)        
 
     for i in range(random_first_index, random_last_index):
-
         newState1 = descendent1.replaceBuilding(i, building_projs[parent1.buildings[i].projId])
         newState2 = descendent2.replaceBuilding(i, building_projs[parent2.buildings[i].projId])
 
@@ -134,7 +146,10 @@ def crossover(parent1, parent2, building_projs):
             descendent1 = newState1
             descendent2 = newState2
             
-    return descendent1, descendent2
+    if(descendent1.score > descendent2.score):
+        return descendent1
+    else:
+        return descendent2
 
 def mutation(seed,building_projs):
     for x in range (len(seed.buildings)):

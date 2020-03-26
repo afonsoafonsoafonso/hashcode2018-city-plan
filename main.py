@@ -14,7 +14,7 @@ city, building_projs = parseFile(file_name)
 init_map = [['.' for col in range(city.cols)] for row in range(city.rows)]
 empty_state = State(city, [], init_map, 0)
 init_sol = getRandomSolution(empty_state, city, building_projs, init_map)
-init_sol2 = getRandomSolution(empty_state, city, building_projs, init_map)
+
 """ start = time.time()
 final_state = tabuSearch(15, init_sol, building_projs)
 end = time.time()
@@ -131,10 +131,17 @@ print(end - start)
 
 print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
 """
-print("Parent1: "+ (str)(init_sol.score))
+init_sol1 = getRandomSolution(empty_state, city, building_projs, init_map)
+init_sol2 = getRandomSolution(empty_state, city, building_projs, init_map)
+print("Parent0: "+ (str)(init_sol.score))
+print("Parent1: " + (str)(init_sol1.score))
 print("Parent2: " + (str)(init_sol2.score))
+sols = []
+sols.append(init_sol)
+sols.append(init_sol1)
+sols.append(init_sol2)
 start = time.time()
-final_state = genetic(deepcopy(init_sol), deepcopy(init_sol2), 40, building_projs)
+final_state = genetic(deepcopy(sols), 40, building_projs)
 end = time.time()
 print("Final Score: " + (str)(final_state.score))
 print("Time: " + (str)(end - start))
