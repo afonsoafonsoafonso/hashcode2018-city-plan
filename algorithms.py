@@ -114,13 +114,18 @@ def genetic(init_sol, init_sol2, iter, building_projs):
     return state # return the overall best descendent
     
 def crossover(parent1, parent2, building_projs):
-    random_first_indexA = randrange(0, len(parent1.buildings)-1)
-    random_last_indexA = randrange(random_first_indexA, len(parent2.buildings))
+    if len(parent1.buildings) <= len(parent2.buildings):
+        gap = len(parent1.buildings)
+    else:
+        gap = len(parent2.buildings)
+        
+    random_first_index = randrange(0, gap-1)
+    random_last_index = randrange(random_first_index, gap)
     
     descendent1 = deepcopy(parent1)
     descendent2 = deepcopy(parent2)        
 
-    for i in range(random_first_indexA, random_last_indexA):
+    for i in range(random_first_index, random_last_index):
 
         newState1 = descendent1.replaceBuilding(i, building_projs[parent1.buildings[i].projId])
         newState2 = descendent2.replaceBuilding(i, building_projs[parent2.buildings[i].projId])
