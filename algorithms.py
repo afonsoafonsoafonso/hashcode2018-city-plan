@@ -102,6 +102,8 @@ def genetic(init_sol, init_sol2, iter, building_projs):
 
     for _ in range(iter):
         parent1,parent2 = crossover(parent1, parent2, building_projs)
+        parent1 = mutation(parent1, building_projs)
+        parent2 = mutation(parent2, building_projs)
         
         #Saving the best descent of each iteration if they are better than the anterior
         if parent1.score > parent2.score and parent1.score > state.score:
@@ -112,17 +114,31 @@ def genetic(init_sol, init_sol2, iter, building_projs):
     return state # return the overall best descendent
     
 def crossover(parent1, parent2, building_projs):
-    random_first_indexA = randrange(0, len(parent1.buildings)-2)
-    random_last_indexA = randrange(random_first_indexA, len(parent2.buildings)-1)
+    random_first_indexA = randrange(0, len(parent1.buildings)-1)
+    random_last_indexA = randrange(random_first_indexA, len(parent2.buildings))
     
     descendent1 = deepcopy(parent1)
     descendent2 = deepcopy(parent2)        
 
     for i in range(random_first_indexA, random_last_indexA):
+
         newState1 = descendent1.replaceBuilding(i, building_projs[parent1.buildings[i].projId])
         newState2 = descendent2.replaceBuilding(i, building_projs[parent2.buildings[i].projId])
+
         if newState1 != False and newState2 != False:
             descendent1 = newState1
             descendent2 = newState2
             
     return descendent1, descendent2
+
+def mutation(seed,building_projs):
+    for x in range (len(seed.buildings)):
+        r = randrange(1,101)    
+        print(r)
+        if r <= 3:
+            random_building_index = randrange(0, len(building_projs))
+            random_building = building_projs[random_building_index]
+            new_seed = seed.replaceBuilding(x, random_building)
+            if new_seed != False:
+                seed = new_seed
+    return seed
