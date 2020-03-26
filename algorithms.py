@@ -118,7 +118,7 @@ def crossover(parent1, parent2, building_projs):
         gap = len(parent1.buildings)
     else:
         gap = len(parent2.buildings)
-        
+
     random_first_index = randrange(0, gap-1)
     random_last_index = randrange(random_first_index, gap)
     
@@ -139,7 +139,7 @@ def crossover(parent1, parent2, building_projs):
 def mutation(seed,building_projs):
     for x in range (len(seed.buildings)):
         r = randrange(1,101)    
-        if r <= 3:
+        if r <= 30:
             random_building_index = randrange(0, len(building_projs))
             random_building = building_projs[random_building_index]
             new_seed = seed.replaceBuilding(x, random_building)

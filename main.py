@@ -131,9 +131,10 @@ print(end - start)
 
 print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
 """
-
+print("Parent1: "+ (str)(init_sol.score))
+print("Parent2: " + (str)(init_sol2.score))
 start = time.time()
-final_state = genetic(deepcopy(init_sol), deepcopy(init_sol2), 5, building_projs)
+final_state = genetic(deepcopy(init_sol), deepcopy(init_sol2), 40, building_projs)
 end = time.time()
-print(final_state.score)
-print(end - start)
+print("Final Score: " + (str)(final_state.score))
+print("Time: " + (str)(end - start))
