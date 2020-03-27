@@ -1,6 +1,7 @@
 from random import randrange, uniform
 from math import e
 from copy import deepcopy
+from state import State
 
 HC_MAX_TRIES = 5
 SA_MAX_TRIES = 5
@@ -91,7 +92,7 @@ def tabuSearch(tab_list_size, init_sol, building_projs):
                     state = new_state
     return state
 
-def genetic(sols, iter, building_projs):
+def genetic(sols, iter, building_projs, populationDiv6): #populationDiv6 corresponde ao valor da (população de cada geração)/6, no caso de populationDiv6=5, população=30
     state = sols[0]
     for i in range(1,len(sols)):
         if sols[i].score > state.score:
@@ -103,9 +104,9 @@ def genetic(sols, iter, building_projs):
 
     for _ in range(iter):
         #crossover
-        child1 = crossover(parent1, parent2, building_projs)
-        child2 = crossover(parent2, parent3, building_projs)
-        child3 = crossover(parent1, parent3, building_projs)
+        child1 = crossover(parent1, parent2, building_projs, populationDiv6)
+        child2 = crossover(parent2, parent3, building_projs, populationDiv6)
+        child3 = crossover(parent1, parent3, building_projs, populationDiv6)
         #mutation
         child1 = mutation(child1, building_projs)
         child2 = mutation(child2, building_projs)
@@ -126,30 +127,35 @@ def genetic(sols, iter, building_projs):
 
     return state #return the overall best descendent
     
-def crossover(parent1, parent2, building_projs):
+def crossover(parent1, parent2, building_projs, populationDiv6):
+    bestChild = State(parent1.city, [], [], 0)
+
     if len(parent1.buildings) <= len(parent2.buildings):
         gap = len(parent1.buildings)
     else:
         gap = len(parent2.buildings)
 
-    random_first_index = randrange(0, gap-1)
-    random_last_index = randrange(random_first_index, gap)
+    for i in range(populationDiv6):
+        random_first_index = randrange(0, gap-1)
+        random_last_index = randrange(random_first_index, gap)
+        
+        descendent1 = deepcopy(parent1)
+        descendent2 = deepcopy(parent2)        
+
+        for i in range(random_first_index, random_last_index):
+            newState1 = descendent1.replaceBuilding(i, building_projs[parent1.buildings[i].projId])
+            newState2 = descendent2.replaceBuilding(i, building_projs[parent2.buildings[i].projId])
+
+            if newState1 != False and newState2 != False:
+                descendent1 = newState1
+                descendent2 = newState2
     
-    descendent1 = deepcopy(parent1)
-    descendent2 = deepcopy(parent2)        
+        if descendent1.score >= descendent2.score and descendent1.score > bestChild.score:
+            bestChild = descendent1
+        elif descendent2.score > descendent1.score and descendent2.score > bestChild.score:
+            bestChild = descendent2
 
-    for i in range(random_first_index, random_last_index):
-        newState1 = descendent1.replaceBuilding(i, building_projs[parent1.buildings[i].projId])
-        newState2 = descendent2.replaceBuilding(i, building_projs[parent2.buildings[i].projId])
-
-        if newState1 != False and newState2 != False:
-            descendent1 = newState1
-            descendent2 = newState2
-            
-    if(descendent1.score > descendent2.score):
-        return descendent1
-    else:
-        return descendent2
+    return bestChild
 
 def mutation(seed,building_projs):
     for x in range (len(seed.buildings)):
