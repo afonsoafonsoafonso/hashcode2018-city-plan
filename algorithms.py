@@ -171,45 +171,52 @@ def mutation(seed,building_projs):
 
 ############# PARTICLE SWARM OPTIMIZATION #############
 def swarm(sol, iter, building_projs):
+    swarmSol = deepcopy(sol)
+
+    hypotheses = [-1,0,1]
+    randomDeltaX = randrange(0,3)
+    randomDeltaY = randrange(0,3)
+
+    bird0 = Bird(sol.city.cols//2, sol.city.rows//2, hypotheses[randomDeltaX], hypotheses[randomDeltaY], True, sol.city.walk_dist)
+    bird1 = Bird(sol.city.cols-1, sol.city.rows//2, 0, 0, False, sol.city.walk_dist)
+    bird2 = Bird(sol.city.cols//2, sol.city.rows-1, 0, 0, False, sol.city.walk_dist)
+
+    for _ in range(iter):
+        bird0.nextStep
+        bird1.nextStep
+        bird2.nextStep
+    
+    return swarmSol
 
 
 class Bird:
-    def __init__(self, x, y, deltaX, deltaY, alphaStatus, distance):
+    def __init__(self, x, y, deltaX, deltaY, alphaStatus, distBtBirds):
         self.x = x
         self.y = y
         self.deltaX = deltaX
         self.deltaY = deltaY
         self.alphaStatus = alphaStatus
-        self.colide = False
-        self.distance = distance
+        self.distBtBirds = distBtBirds
     
-    def step(self, positions, alphaPos, alphaVel):#positions(dos outros birds); alphaPos(position do líder); alphaVel(velocidade do líder(1,2,3..))
-        self.deltaX = (self.x - alphaPos[0]) / sqrt(alphaPos[0] * alphaPos[0] + alphaPos[1] * alphaPos[1])
-        self.deltaY = (self.y - alphaPos[1]) / sqrt(alphaPos[0] * alphaPos[0] + alphaPos[1] * alphaPos[1])
+    def nextStep(self, positions, alphaPos, alphaVel):#positions(dos outros birds); alphaVel(velocidade do líder(1,2,3..))
+        if self.alphaStatus == True:
+            self.x += self.deltaX
+            self.y += self.deltaY
+        else:
+            self.deltaX = (self.x - alphaPos[0]) // sqrt(alphaPos[0] * alphaPos[0] + alphaPos[1] * alphaPos[1])
+            self.deltaY = (self.y - alphaPos[1]) // sqrt(alphaPos[0] * alphaPos[0] + alphaPos[1] * alphaPos[1])
 
-        self.x += self.deltaX
-        self.y += self.deltaY
+            self.x += self.deltaX
+            self.y += self.deltaY
 
-        auxColide = True
+        for i in range(len(positions)):
+            if calcManhattanDist(self.x, self.y, positions[i][0], positions[i][1]) <= self.distBtBirds:
+                self.deltaX = (self.x - positions[i][0]) // sqrt(positions[i][0] * positions[i][0] + positions[i][1] * positions[i][1])
+                self.deltaY = (self.y - positions[i][1]) // sqrt(positions[i][0] * positions[i][0] + positions[i][1] * positions[i][1])
 
-        while auxColide == True:
-            for i in range(len(positions)):
-                if calcManhattanDist(self.x, self.y, positions[i][0], positions[i][1]) <= self.distance:
-                    self.colide = True
-                    
-                    self.deltaX = (self.x - positions[i][0]) / sqrt(positions[i][0] * positions[i][0] + positions[i][1] * positions[i][1])
-                    self.deltaY = (self.y - positions[i][1]) / sqrt(positions[i][0] * positions[i][0] + positions[i][1] * positions[i][1])
-
-                    self.x += self.deltaX
-                    self.y += self.deltaY
-                    break
-                else:
-                    self.colide = False
-
-            if self.colid == False:
-                auxColide == False
-            else:
-                suicide
+                self.x -= self.deltaX
+                self.y -= self.deltaY
+                break
             
 def calcManhattanDist(row1, col1, row2, col2):
     return (abs(row2 - row1) + abs(col2 - col1))
