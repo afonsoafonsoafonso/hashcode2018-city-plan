@@ -1,5 +1,5 @@
 from random import randrange, uniform
-from math import e
+from math import e, sqrt
 from copy import deepcopy
 from state import State
 
@@ -92,6 +92,7 @@ def tabuSearch(tab_list_size, init_sol, building_projs):
                     state = new_state
     return state
 
+############# GENETIC ALGORITHM #############
 def genetic(sols, iter, building_projs, populationDiv6): #populationDiv6 corresponde ao valor da (população de cada geração)/6, no caso de populationDiv6=5, população=30
     state = sols[0]
     for i in range(1,len(sols)):
@@ -167,3 +168,48 @@ def mutation(seed,building_projs):
             if new_seed != False:
                 seed = new_seed
     return seed
+
+############# PARTICLE SWARM OPTIMIZATION #############
+def swarm(sol, iter, building_projs):
+
+
+class Bird:
+    def __init__(self, x, y, deltaX, deltaY, alphaStatus, distance):
+        self.x = x
+        self.y = y
+        self.deltaX = deltaX
+        self.deltaY = deltaY
+        self.alphaStatus = alphaStatus
+        self.colide = False
+        self.distance = distance
+    
+    def step(self, positions, alphaPos, alphaVel):#positions(dos outros birds); alphaPos(position do líder); alphaVel(velocidade do líder(1,2,3..))
+        self.deltaX = (self.x - alphaPos[0]) / sqrt(alphaPos[0] * alphaPos[0] + alphaPos[1] * alphaPos[1])
+        self.deltaY = (self.y - alphaPos[1]) / sqrt(alphaPos[0] * alphaPos[0] + alphaPos[1] * alphaPos[1])
+
+        self.x += self.deltaX
+        self.y += self.deltaY
+
+        auxColide = True
+
+        while auxColide == True:
+            for i in range(len(positions)):
+                if calcManhattanDist(self.x, self.y, positions[i][0], positions[i][1]) <= self.distance:
+                    self.colide = True
+                    
+                    self.deltaX = (self.x - positions[i][0]) / sqrt(positions[i][0] * positions[i][0] + positions[i][1] * positions[i][1])
+                    self.deltaY = (self.y - positions[i][1]) / sqrt(positions[i][0] * positions[i][0] + positions[i][1] * positions[i][1])
+
+                    self.x += self.deltaX
+                    self.y += self.deltaY
+                    break
+                else:
+                    self.colide = False
+
+            if self.colid == False:
+                auxColide == False
+            else:
+                suicide
+            
+def calcManhattanDist(row1, col1, row2, col2):
+    return (abs(row2 - row1) + abs(col2 - col1))
