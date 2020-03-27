@@ -174,8 +174,11 @@ def swarm(sol, iter, building_projs):
     swarmSol = deepcopy(sol)
 
     hypotheses = [-1,0,1]
-    randomDeltaX = randrange(0,3)
-    randomDeltaY = randrange(0,3)
+    while True:
+        randomDeltaX = randrange(0,3)
+        randomDeltaY = randrange(0,3)
+        if randomDeltaX != randomDeltaY:
+            break
 
     bird0 = Bird(sol.city.cols//2, sol.city.rows//2, hypotheses[randomDeltaX], hypotheses[randomDeltaY], True, sol.city.walk_dist)
     bird1 = Bird(sol.city.cols-1, sol.city.rows//2, 0, 0, False, sol.city.walk_dist)
