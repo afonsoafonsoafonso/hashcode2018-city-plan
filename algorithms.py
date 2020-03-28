@@ -173,6 +173,7 @@ def mutation(seed,building_projs):
 def swarm(sol, iter, building_projs):
     swarmSol = deepcopy(sol)
 
+    #direção inicial random do lider
     hypotheses = [-1,0,1]
     while True:
         randomDeltaX = randrange(0,3)
@@ -180,46 +181,118 @@ def swarm(sol, iter, building_projs):
         if randomDeltaX != randomDeltaY:
             break
 
-    bird0 = Bird(sol.city.cols//2, sol.city.rows//2, hypotheses[randomDeltaX], hypotheses[randomDeltaY], True, sol.city.walk_dist)
-    bird1 = Bird(sol.city.cols-1, sol.city.rows//2, 0, 0, False, sol.city.walk_dist)
-    bird2 = Bird(sol.city.cols//2, sol.city.rows-1, 0, 0, False, sol.city.walk_dist)
+    #inicializacao dos elementos do swarm
+    bird0 = Bird(sol.city.cols//2, sol.city.rows//2, hypotheses[randomDeltaX], hypotheses[randomDeltaY], True, sol.city.walk_dist, 1)
+    bird1 = Bird(sol.city.cols-1, sol.city.rows//2, 0, 0, False, sol.city.walk_dist, 1)
+    bird2 = Bird(sol.city.cols//2, sol.city.rows-1, 0, 0, False, sol.city.walk_dist, 1)
 
+    #alphaPos e alphaVel
+    alphaPos = bird0.pos
+    alphaVel = 1
+
+    #loop principal
     for _ in range(iter):
-        bird0.nextStep
-        bird1.nextStep
-        bird2.nextStep
+        #lista de posicões para verificar que nao há colisoes
+        #movimentacao dos elementos do swarm
+        positions = []
+        positions.append(bird1.pos)
+        positions.append(bird2.pos)
+        swarmSol, bird0Score = bird0.nextStep(positions, alphaPos, alphaVel, swarmSol)
+
+        positions = []
+        positions.append(bird0.pos)
+        positions.append(bird2.pos)
+        swarmSol, bird1Score = bird1.nextStep(positions, alphaPos, alphaVel, swarmSol)
+
+        positions = []
+        positions.append(bird0.pos)
+        positions.append(bird1.pos)
+        swarmSol, bird2Score = bird2.nextStep(positions, alphaPos, alphaVel, swarmSol)
+
+        #verificacao do melhoramento do score de cada um e estabelecimento do lider
+        if bird0Score >= bird1Score and bird0Score >= bird2Score:
+            alphaPos = bird0.pos
+
+            if bird0.alphaStatus == True:
+                bird0.vel += 1
+            else:
+                bird0.vel = 1
+
+            alphaVel = bird0.vel
+            bird0.alphaStatus = True
+
+            bird1.alphaStatus = False
+            bird1.vel = alphaVel
+
+            bird2.alphaStatus = False
+            bird2.vel = alphaVel
+        elif bird1Score > bird0Score and bird1Score >= bird2Score:
+            alphaPos = bird1.pos
+
+            if bird1.alphaStatus == True:
+                bird1.vel += 1
+            else:
+                bird1.vel = 1
+
+            alphaVel = bird1.vel
+            bird1.alphaStatus = True
+
+            bird0.alphaStatus = False
+            bird0.vel = alphaVel
+
+            bird2.alphaStatus = False
+            bird2.vel = alphaVel
+        else:
+            alphaPos = bird2.pos
+
+            if bird2.alphaStatus == True:
+                bird2.vel += 1
+            else:
+                bird2.vel = 1
+
+            alphaVel = bird2.vel
+            bird2.alphaStatus = True
+
+            bird0.alphaStatus = False
+            bird0.vel = alphaVel
+
+            bird1.alphaStatus = False
+            bird1.vel = alphaVel
     
     return swarmSol
 
 
 class Bird:
-    def __init__(self, x, y, deltaX, deltaY, alphaStatus, distBtBirds):
-        self.x = x
-        self.y = y
+    def __init__(self, x, y, deltaX, deltaY, alphaStatus, distBtBirds, vel):
+        self.pos = (x,y)
         self.deltaX = deltaX
         self.deltaY = deltaY
         self.alphaStatus = alphaStatus
         self.distBtBirds = distBtBirds
+        self.vel = vel
     
-    def nextStep(self, positions, alphaPos, alphaVel):#positions(dos outros birds); alphaVel(velocidade do líder(1,2,3..))
+    def nextStep(self, positions, alphaPos, alphaVel, swarmSol):#positions(dos outros birds); alphaVel(velocidade do líder(1,2,3..))
         if self.alphaStatus == True:
-            self.x += self.deltaX
-            self.y += self.deltaY
+            self.pos = (self.pos[0] + self.deltaX * self.vel, self.pos[1] + self.deltaY * self.vel)
         else:
-            self.deltaX = (self.x - alphaPos[0]) // sqrt(alphaPos[0] * alphaPos[0] + alphaPos[1] * alphaPos[1])
-            self.deltaY = (self.y - alphaPos[1]) // sqrt(alphaPos[0] * alphaPos[0] + alphaPos[1] * alphaPos[1])
+            self.deltaX = (self.pos[0] - alphaPos[0]) // sqrt(alphaPos[0] * alphaPos[0] + alphaPos[1] * alphaPos[1])
+            self.deltaY = (self.pos[1] - alphaPos[1]) // sqrt(alphaPos[0] * alphaPos[0] + alphaPos[1] * alphaPos[1])
 
-            self.x += self.deltaX
-            self.y += self.deltaY
+            self.pos = (self.pos[0] + self.deltaX * self.vel, self.pos[1] + self.deltaY * self.vel)
 
         for i in range(len(positions)):
-            if calcManhattanDist(self.x, self.y, positions[i][0], positions[i][1]) <= self.distBtBirds:
-                self.deltaX = (self.x - positions[i][0]) // sqrt(positions[i][0] * positions[i][0] + positions[i][1] * positions[i][1])
-                self.deltaY = (self.y - positions[i][1]) // sqrt(positions[i][0] * positions[i][0] + positions[i][1] * positions[i][1])
+            if calcManhattanDist(self.pos[0], self.pos[1], positions[i][0], positions[i][1]) <= self.distBtBirds:
+                self.deltaX = (self.pos[0] - positions[i][0]) // sqrt(positions[i][0] * positions[i][0] + positions[i][1] * positions[i][1])
+                self.deltaY = (self.pos[1] - positions[i][1]) // sqrt(positions[i][0] * positions[i][0] + positions[i][1] * positions[i][1])
 
-                self.x -= self.deltaX
-                self.y -= self.deltaY
+                self.pos = (self.pos[0] + self.deltaX * self.vel, self.pos[1] + self.deltaY * self.vel)
                 break
+
+        return self.optimizePosition(swarmSol)
+    
+    def optimizePosition(self, swarmSol):
+        print("sou lindo mas tenho de acabar isto")
+        return swarmSol, 0
             
 def calcManhattanDist(row1, col1, row2, col2):
     return (abs(row2 - row1) + abs(col2 - col1))
