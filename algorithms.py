@@ -170,7 +170,7 @@ def mutation(seed,building_projs):
     return seed
 
 ############# PARTICLE SWARM OPTIMIZATION #############
-def swarm(sol, iter, building_projs):
+def swarm(sol, iter, building_projs, distBtBirds):
     swarmSol = deepcopy(sol)
 
     #direção inicial random do lider
@@ -182,9 +182,9 @@ def swarm(sol, iter, building_projs):
             break
 
     #inicializacao dos elementos do swarm
-    bird0 = Bird(sol.city.cols//2, sol.city.rows//2, hypotheses[randomDeltaX], hypotheses[randomDeltaY], True, sol.city.walk_dist, 1)
-    bird1 = Bird(sol.city.cols-1, sol.city.rows//2, 0, 0, False, sol.city.walk_dist, 1)
-    bird2 = Bird(sol.city.cols//2, sol.city.rows-1, 0, 0, False, sol.city.walk_dist, 1)
+    bird0 = Bird(sol.city.cols//2, sol.city.rows//2, hypotheses[randomDeltaX], hypotheses[randomDeltaY], True, distBtBirds, 1)
+    bird1 = Bird(sol.city.cols-1, sol.city.rows//2, 0, 0, False, distBtBirds, 1)
+    bird2 = Bird(sol.city.cols//2, sol.city.rows-1, 0, 0, False, distBtBirds, 1)
 
     #alphaPos e alphaVel
     alphaPos = bird0.pos
@@ -192,6 +192,10 @@ def swarm(sol, iter, building_projs):
 
     #loop principal
     for _ in range(iter):
+        print("bird0(x,y): (" + str(bird0.pos[0]) + "," + str(bird0.pos[1]) + ")")
+        print("bird1(x,y): (" + str(bird1.pos[0]) + "," + str(bird1.pos[1]) + ")")
+        print("bird2(x,y): (" + str(bird2.pos[0]) + "," + str(bird2.pos[1]) + ")")
+        print("################")
         #lista de posicões para verificar que nao há colisoes
         #movimentacao dos elementos do swarm
         positions = []
@@ -274,28 +278,51 @@ class Bird:
     def nextStep(self, positions, alphaPos, alphaVel, swarmSol, building_projs):#positions(dos outros birds); alphaVel(velocidade do líder(1,2,3..))
         if self.alphaStatus == True:
             self.pos = (self.pos[0] + self.deltaX * self.vel, self.pos[1] + self.deltaY * self.vel)
+            self.verifyPos(swarmSol)
         else:
             self.deltaX = (self.pos[0] - alphaPos[0]) // sqrt(alphaPos[0] * alphaPos[0] + alphaPos[1] * alphaPos[1])
             self.deltaY = (self.pos[1] - alphaPos[1]) // sqrt(alphaPos[0] * alphaPos[0] + alphaPos[1] * alphaPos[1])
-
             self.pos = (self.pos[0] + self.deltaX * self.vel, self.pos[1] + self.deltaY * self.vel)
+            self.verifyPos(swarmSol)
 
         for i in range(len(positions)):
             if calcManhattanDist(self.pos[0], self.pos[1], positions[i][0], positions[i][1]) <= self.distBtBirds:
                 self.deltaX = (self.pos[0] - positions[i][0]) // sqrt(positions[i][0] * positions[i][0] + positions[i][1] * positions[i][1])
                 self.deltaY = (self.pos[1] - positions[i][1]) // sqrt(positions[i][0] * positions[i][0] + positions[i][1] * positions[i][1])
-
                 self.pos = (self.pos[0] + self.deltaX * self.vel, self.pos[1] + self.deltaY * self.vel)
+                self.verifyPos(swarmSol)
                 break
 
         prevScore = swarmSol.score
-        newSol = self.optimizePosition(swarmSol, building_projs)
+        newSol = self.optimizePosition(self.pos, swarmSol, building_projs)
 
         return newSol, newSol.score - prevScore
+
+    def verifyPos(self, swarmSol):
+        if self.pos[0] < 0 or self.pos[0] > (swarmSol.city.cols - 1) or self.pos[1] < 0 or self.pos[1] > (swarmSol.city.rows -1):
+            self.deltaX = - self.deltaX
+            self.deltaY = - self.deltaY
+            self.pos = (self.pos[0] + self.deltaX * self.vel, self.pos[1] + self.deltaY * self.vel)
+
     
-    def optimizePosition(self, swarmSol, building_projs):
-        print("sou lindo mas tenho de acabar isto")
-        return swarmSol
+    def optimizePosition(self, position, swarmSol, building_projs):
+        prevState = swarmSol
+        bestState = swarmSol
+        x = int(position[0])
+        y = int(position[1])
+        buildingIndex = prevState.map[y][x]
+
+        for proj in building_projs:
+            if buildingIndex == '.':
+                newState = prevState.nextState(proj, y, x)
+            else:
+                newState = prevState.replaceBuilding(buildingIndex - 1, proj)            
+
+            if newState != False and newState.score > bestState.score:
+                print("mais score pah")
+                bestState = newState
+
+        return bestState
             
 def calcManhattanDist(row1, col1, row2, col2):
     return (abs(row2 - row1) + abs(col2 - col1))
