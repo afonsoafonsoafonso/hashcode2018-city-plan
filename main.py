@@ -153,7 +153,7 @@ print("Time: " + (str)(end - start))
 
 print("Initial Solution: "+ (str)(init_sol.score))
 start = time.time()
-final_state = swarm(deepcopy(init_sol), 10, building_projs, 2)
+final_state = swarm(deepcopy(init_sol), 30, building_projs, 2)
 end = time.time()
 print("Final Score: " + (str)(final_state.score))
 print("Time: " + (str)(end - start))

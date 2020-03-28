@@ -193,8 +193,11 @@ def swarm(sol, iter, building_projs, distBtBirds):
     #loop principal
     for _ in range(iter):
         print("bird0(x,y): (" + str(bird0.pos[0]) + "," + str(bird0.pos[1]) + ")")
+        print(bird0.deltaX, bird0.deltaY)
         print("bird1(x,y): (" + str(bird1.pos[0]) + "," + str(bird1.pos[1]) + ")")
+        print(bird1.deltaX, bird1.deltaY)
         print("bird2(x,y): (" + str(bird2.pos[0]) + "," + str(bird2.pos[1]) + ")")
+        print(bird2.deltaX, bird2.deltaY)
         print("################")
         #lista de posicões para verificar que nao há colisoes
         #movimentacao dos elementos do swarm
@@ -280,15 +283,21 @@ class Bird:
             self.pos = (self.pos[0] + self.deltaX * self.vel, self.pos[1] + self.deltaY * self.vel)
             self.verifyPos(swarmSol)
         else:
-            self.deltaX = (self.pos[0] - alphaPos[0]) // sqrt(alphaPos[0] * alphaPos[0] + alphaPos[1] * alphaPos[1])
-            self.deltaY = (self.pos[1] - alphaPos[1]) // sqrt(alphaPos[0] * alphaPos[0] + alphaPos[1] * alphaPos[1])
+            distX = self.pos[0] - alphaPos[0]
+            distY = self.pos[1] - alphaPos[1]
+            norma = sqrt(distX * distX + distY * distY)
+            self.deltaX = distX // norma
+            self.deltaY = distY // norma
             self.pos = (self.pos[0] + self.deltaX * self.vel, self.pos[1] + self.deltaY * self.vel)
             self.verifyPos(swarmSol)
 
         for i in range(len(positions)):
             if calcManhattanDist(self.pos[0], self.pos[1], positions[i][0], positions[i][1]) <= self.distBtBirds:
-                self.deltaX = (self.pos[0] - positions[i][0]) // sqrt(positions[i][0] * positions[i][0] + positions[i][1] * positions[i][1])
-                self.deltaY = (self.pos[1] - positions[i][1]) // sqrt(positions[i][0] * positions[i][0] + positions[i][1] * positions[i][1])
+                distX = self.pos[0] - positions[i][0]
+                distY = self.pos[1] - positions[i][1]
+                norma = sqrt(distX * distX + distY * distY)
+                self.deltaX = - distX // norma
+                self.deltaY = - distY // norma
                 self.pos = (self.pos[0] + self.deltaX * self.vel, self.pos[1] + self.deltaY * self.vel)
                 self.verifyPos(swarmSol)
                 break
