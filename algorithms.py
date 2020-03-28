@@ -197,17 +197,17 @@ def swarm(sol, iter, building_projs):
         positions = []
         positions.append(bird1.pos)
         positions.append(bird2.pos)
-        swarmSol, bird0Score = bird0.nextStep(positions, alphaPos, alphaVel, swarmSol)
+        swarmSol, bird0Score = bird0.nextStep(positions, alphaPos, alphaVel, swarmSol, building_projs)
 
         positions = []
         positions.append(bird0.pos)
         positions.append(bird2.pos)
-        swarmSol, bird1Score = bird1.nextStep(positions, alphaPos, alphaVel, swarmSol)
+        swarmSol, bird1Score = bird1.nextStep(positions, alphaPos, alphaVel, swarmSol, building_projs)
 
         positions = []
         positions.append(bird0.pos)
         positions.append(bird1.pos)
-        swarmSol, bird2Score = bird2.nextStep(positions, alphaPos, alphaVel, swarmSol)
+        swarmSol, bird2Score = bird2.nextStep(positions, alphaPos, alphaVel, swarmSol, building_projs)
 
         #verificacao do melhoramento do score de cada um e estabelecimento do lider
         if bird0Score >= bird1Score and bird0Score >= bird2Score:
@@ -271,7 +271,7 @@ class Bird:
         self.distBtBirds = distBtBirds
         self.vel = vel
     
-    def nextStep(self, positions, alphaPos, alphaVel, swarmSol):#positions(dos outros birds); alphaVel(velocidade do líder(1,2,3..))
+    def nextStep(self, positions, alphaPos, alphaVel, swarmSol, building_projs):#positions(dos outros birds); alphaVel(velocidade do líder(1,2,3..))
         if self.alphaStatus == True:
             self.pos = (self.pos[0] + self.deltaX * self.vel, self.pos[1] + self.deltaY * self.vel)
         else:
@@ -288,11 +288,14 @@ class Bird:
                 self.pos = (self.pos[0] + self.deltaX * self.vel, self.pos[1] + self.deltaY * self.vel)
                 break
 
-        return self.optimizePosition(swarmSol)
+        prevScore = swarmSol.score
+        newSol = self.optimizePosition(swarmSol, building_projs)
+
+        return newSol, newSol.score - prevScore
     
-    def optimizePosition(self, swarmSol):
+    def optimizePosition(self, swarmSol, building_projs):
         print("sou lindo mas tenho de acabar isto")
-        return swarmSol, 0
+        return swarmSol
             
 def calcManhattanDist(row1, col1, row2, col2):
     return (abs(row2 - row1) + abs(col2 - col1))
