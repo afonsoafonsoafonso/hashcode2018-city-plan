@@ -51,7 +51,6 @@ def simulatedAnnealing(colFactor, init_sol, building_projs):
                 if new_state.score > state.score or t/1000 > uniform(0,1):
                     state = new_state
                     break
-    print("i:" + str(i))
     return state
 
 def tabuSearch(tab_list_size, max_its, init_sol, building_projs):

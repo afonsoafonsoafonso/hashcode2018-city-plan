@@ -11,6 +11,8 @@ if len(sys.argv) != 2:
     print('Wrong number of parameters.\n\nUsage: python3 city_plan.py inputFile')
     sys.exit(0)
 
+print('Initializing...')
+
 file_name = sys.argv[1]
 city, building_projs = parseFile(file_name)
 empty_map = [['.' for col in range(city.cols)] for row in range(city.rows)]
@@ -19,6 +21,8 @@ empty_state = State(city, [], empty_map, 0)
 queue = []
 user_input = None
 init_sol = getRandomSolution(empty_state, city, building_projs, empty_map)
+
+print('Initial solution score: ' + str(init_sol.score))
 
 while user_input != '0':
     print('\nCity Plan : IART 2019/2020 Project')
@@ -33,7 +37,7 @@ while user_input != '0':
     print('7: Swarm')
     print('\nAlgorithms in queue: ', end='')
     print(queue)
-    print('\nInput 0 to solve.\n')
+    print('\nInput \'0\' to solve.\n')
     user_input = input('Your option: ')
     
     if user_input == '1':
@@ -49,7 +53,7 @@ while user_input != '0':
     elif user_input == '3':
         print('~~~Simulated Annealing Options~~~\n')
         option = input('Cooling factor: ')
-        queue.append((simulatedAnnealing, [int(option)]))
+        queue.append((simulatedAnnealing, [float(option)]))
 
     elif user_input == '4':
         print('~~~~~~Tabu Search Options~~~~~~\n')
@@ -61,7 +65,7 @@ while user_input != '0':
         print('~Tabu Search w/Annealing Options~\n')
         option1 = input('Tabu list size: ')
         option2 = input('Cooling factor: ')
-        queue.append((tabuSearchWithAnnealing, [int(option1), int(option2)]))
+        queue.append((tabuSearchWithAnnealing, [int(option1), float(option2)]))
 
     elif user_input == '6':
         print('~~~~Genetic Algorithm Options~~~~\n')
@@ -74,9 +78,24 @@ while user_input != '0':
         option2 = input('Distance Between Birds: ')
         queue.append((swarm, [int(option1), int(option2)]))
 
+print('Do you want the map to be drawn on screen for each solution?')
+print('1: Yes')
+print('2: No')
+option = int(input('Your option: '))
+if option != 1 and option != 2:
+    sys.exit(1)
+print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+i = 1
 for algorithm in queue:
+    print('Algorithm #' + str(i) + ':')
+    start = time.time()
     state = algorithm[0](*algorithm[1], init_sol, building_projs)
-    printMap(state)
+    end = time.time()
+    print('Elapsed time: ' + str(end-start))
+    print('Final score: ' + str(state.score))
+    if option==1:
+        printMap(state)
+    i += 1
 
 print('\n\nFINISHED')
         
