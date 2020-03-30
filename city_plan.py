@@ -4,7 +4,7 @@ from city import City
 from building_proj import BuildingProj
 from building import Building
 from state import State
-from utils import parseFile, getRandomSolution
+from utils import *
 from algorithms import *
 
 if len(sys.argv) != 2:
@@ -18,6 +18,7 @@ empty_state = State(city, [], empty_map, 0)
 
 queue = []
 user_input = None
+init_sol = getRandomSolution(empty_state, city, building_projs, empty_map)
 
 while user_input != '0':
     print('\nCity Plan : IART 2019/2020 Project')
@@ -38,37 +39,44 @@ while user_input != '0':
     if user_input == '1':
         print('~~~~~~Hill Climbing Options~~~~~~\n')
         option = input('Iterations: ')
-        queue.append((1,option))
+        queue.append((hillClimbing,[int(option)]))
 
     elif user_input == '2':
         print('~~~~~Steepest Ascent Options~~~~~\n')
         option = input('Iterations: ')
-        queue.append((2,option))
+        queue.append((steepestAscent, [int(option)]))
 
     elif user_input == '3':
         print('~~~Simulated Annealing Options~~~\n')
         option = input('Cooling factor: ')
-        queue.append((3,option))
+        queue.append((simulatedAnnealing, [int(option)]))
 
     elif user_input == '4':
         print('~~~~~~Tabu Search Options~~~~~~\n')
         option1 = input('Tabu list size: ')
         option2 = input('Iterations: ')
-        queue.append((4, option1, option2))
+        queue.append((tabuSearch, [int(option1), int(option2)]))
     
     elif user_input == '5':
         print('~Tabu Search w/Annealing Options~\n')
         option1 = input('Tabu list size: ')
         option2 = input('Cooling factor: ')
-        queue.append((5, option1, option2))
+        queue.append((tabuSearchWithAnnealing, [int(option1), int(option2)]))
 
     elif user_input == '6':
         print('~~~~Genetic Algorithm Options~~~~\n')
         option = input('Iterations: ')
-        queue.append((6, option))
+        queue.append((genetic, [int(option1)]))
 
     elif user_input == '7':
         print('~~~~~~~~~~Swarm Options~~~~~~~~~~\n')
-        option = input('Iterations: ')
-        queue.append((7, option))
+        option1 = input('Iterations: ')
+        option2 = input('Distance Between Birds: ')
+        queue.append((swarm, [int(option1), int(option2)]))
+
+for algorithm in queue:
+    state = algorithm[0](*algorithm[1], init_sol, building_projs)
+    printMap(state)
+
+print('\n\nFINISHED')
         

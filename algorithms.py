@@ -3,21 +3,13 @@ from math import e, sqrt
 from copy import deepcopy
 from state import State
 
-HC_MAX_TRIES = 300
-SA_MAX_TRIES = 500
-
 #como se escolhe o vizinho a verificar? para já está a ser escolhido um à toa
 # e se for melhor está feito
-def hillClimbing(init_sol, building_projs):
+def hillClimbing(max_its, init_sol, building_projs):
     state = init_sol
-    tries = 0
-    i = 0
-    found_better_state = False
-    while tries < HC_MAX_TRIES:
-        i += 1
-        #print('Iteration: ' + str(i))
-        #print(tries)
-        found_better_state = False
+    its = 0
+    while its < max_its:
+        its += 1
         random_building_index = randrange(0, len(state.buildings))
         random_building = state.buildings[random_building_index]
         for building_proj in building_projs:
@@ -25,34 +17,21 @@ def hillClimbing(init_sol, building_projs):
             if new_state != False and new_state.score > state.score:
                 state = new_state
                 found_better_state = True
-                tries = 0
                 break
-        if not found_better_state:
-            tries += 1
-    print(i)
     return state
 
-def steepestAscent(init_sol, building_projs):
+def steepestAscent(max_its, init_sol, building_projs):
     state = init_sol
-    tries = 0
-    i = 0
+    its = 0
     at_least_one_success = False
-    while tries < SA_MAX_TRIES:
-        i += 1
-        #print('Iteration: ' + str(i))
-        #print(tries)
-        at_least_one_success = False
+    while its < max_its:
+        its += 1
         random_building_index = randrange(0, len(state.buildings))
         random_building = state.buildings[random_building_index]
         for building_proj in building_projs:
             new_state = state.replaceBuilding(random_building_index, building_proj)
             if new_state != False and new_state.score > state.score:
-                at_least_one_success = True
-                tries = 0
                 state = new_state
-        if not at_least_one_success:
-            tries += 1
-    print(i)
     return state
 
 def simulatedAnnealing(colFactor, init_sol, building_projs):
@@ -118,7 +97,7 @@ def tabuSearchWithAnnealing(tab_list_size, col_factor, init_sol, building_projs)
     return state
 
 ############# GENETIC ALGORITHM #############
-def genetic(sols, iter, building_projs, populationDiv6): #populationDiv6 corresponde ao valor da (população de cada geração)/6, no caso de populationDiv6=5, população=30
+def genetic(iter, sols, building_projs, populationDiv6): #populationDiv6 corresponde ao valor da (população de cada geração)/6, no caso de populationDiv6=5, população=30
     state = sols[0]
     for i in range(1,len(sols)):
         if sols[i].score > state.score:
@@ -195,7 +174,7 @@ def mutation(seed,building_projs):
     return seed
 
 ############# PARTICLE SWARM OPTIMIZATION #############
-def swarm(sol, iter, building_projs, distBtBirds):
+def swarm(iter, distBtBirds, sol, building_projs):
     swarmSol = deepcopy(sol)
 
     #direção inicial random do lider
