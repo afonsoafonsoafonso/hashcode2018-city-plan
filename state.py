@@ -10,7 +10,7 @@ class State:
         self.buildings = deepcopy(buildings)
         self.map = deepcopy(map)
         self.score = score
-        
+    # building project a ser construido na row 'mrow' e col 'mcol'
     def nextState(self, building_proj, mrow, mcol):
         new_map = deepcopy(self.map)
         new_buildings = deepcopy(self.buildings)
@@ -30,6 +30,11 @@ class State:
         new_buildings[-1].score = new_score - self.score
         return State(self.city, new_buildings, new_map, new_score)
 
+    # argumentos: walking distance, antigo score, mapa, buildingProject, row do mapa onde se vai construir
+    #, col do mapa onde se vai construir, buildings e index com default a 1 (para dar a usar no replace building
+    # isto pois quando se está a construir a solução inicial o building a que se está a calcular os score é sempre
+    # o último mas no replace building não. é um index arbitrário, sendo que o index se mantém mesmo depois do building
+    # ser substituido por outro)
     def calculateScore(self, walkd, old_score, map, building_proj, mrow, mcol, buildings, index=-1):
         visited = [] # edificios construidos já visitados 
         services = [] # servicos do edificio residencial que esta a ser construido ja encontrados
@@ -38,11 +43,11 @@ class State:
         for prow in range(building_proj.rows): # por cada row do projeto do edificio a construir
             for pcol in range(building_proj.cols): # por cada col do projeto do edificio a construir
                 if building_proj.plan[prow][pcol] == '#': # caso exista uma celula ocupada do plano
-                    for nrow in range(-walkd + (mrow + prow), walkd + (mrow+prow)+1): # cenas para aumentar a largura da pesquisa qd menor o comprimento
-                        if nrow >= len(map) or nrow < 0:
+                    for nrow in range(-walkd + (mrow + prow), walkd + (mrow+prow)+1): # verificar casas dentro do raio walking distance
+                        if nrow >= len(map) or nrow < 0: # ver boundaries do mapa
                             continue
-                        for ncol in range(-walkd + abs(nrow-mrow-prow) + pcol+mcol, walkd - abs(nrow-mrow-prow) + pcol + mcol + 1):
-                            if ncol >= len(map[nrow]) or ncol < 0 :
+                        for ncol in range(-walkd + abs(nrow-mrow-prow) + pcol+mcol, walkd - abs(nrow-mrow-prow) + pcol + mcol + 1): # verificar casas dentro do raio walking distance
+                            if ncol >= len(map[nrow]) or ncol < 0 : # ver boundarie sdo mapa
                                 continue
                             if map[nrow][ncol] != '.' and map[nrow][ncol] != self_building_id:
                                 building_n = int(map[nrow][ncol]) # index+1 do building no array dos buildings ja construidos
@@ -51,11 +56,11 @@ class State:
                                     found_building = buildings[building_n-1]
                                     if found_building.type == 'R' and building_proj.type == 'U':
                                         if building_proj.cenas not in found_building.services:
-                                            found_building.services.append(building_proj.cenas)
+                                            found_building.services.append(building_proj.cenas) # append nos services do edificio encontrado o serviço que está ser construido
                                             score += found_building.cenas         
                                     elif found_building.type == 'U' and building_proj.type == 'R':
                                         if found_building.cenas not in buildings[index].services and found_building.cenas not in services:
-                                            buildings[index].services.append(found_building.cenas)
+                                            buildings[index].services.append(found_building.cenas) # append nos services do edificio a ser construido o servico encontrado
                                             score += building_proj.cenas
         return score
 

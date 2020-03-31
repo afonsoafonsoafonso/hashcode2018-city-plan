@@ -12,6 +12,8 @@ def hillClimbing(max_its, init_sol, building_projs):
     while its < max_its:
         its += 1
         #print(str(its) + ',' + str(state.score), file=f)
+        # aqui escolhe-se um building aleatório para tentar encontrar um substituo. sendo as possíveis
+        # alternativas os estados vizinhos
         random_building_index = randrange(0, len(state.buildings))
         random_building = state.buildings[random_building_index]
         for building_proj in building_projs:
@@ -31,6 +33,8 @@ def steepestAscent(max_its, init_sol, building_projs):
     while its < max_its:
         its += 1
         #print(str(its) + ',' + str(state.score), file=f)
+        # aqui escolhe-se um building aleatório para tentar encontrar um substituo. sendo as possíveis
+        # alternativas os estados vizinhos
         random_building_index = randrange(0, len(state.buildings))
         random_building = state.buildings[random_building_index]
         for building_proj in building_projs:
@@ -51,6 +55,8 @@ def simulatedAnnealing(colFactor, init_sol, building_projs):
         i += 1
         #print(str(i) + ',' + str(state.score), file=f)
         t *= colFactor
+        # aqui escolhe-se um building aleatório para tentar encontrar um substituo. sendo as possíveis
+        # alternativas os estados vizinhos
         random_building_index = randrange(0, len(state.buildings))
         random_building = state.buildings[random_building_index]
         for building_proj in building_projs:
@@ -69,6 +75,8 @@ def tabuSearch(tab_list_size, max_its, init_sol, building_projs):
     it = 0
     while it < max_its:
         it += 1
+        # aqui escolhe-se um building aleatório para tentar encontrar um substituo. sendo as possíveis
+        # alternativas os estados vizinhos
         random_building_index = randrange(0, len(state.buildings))
         random_building = state.buildings[random_building_index]
         for building_proj in building_projs:
@@ -93,6 +101,8 @@ def tabuSearchWithAnnealing(tab_list_size, col_factor, init_sol, building_projs)
     state = init_sol
     while t > end_t:
         t *= col_factor
+        # aqui escolhe-se um building aleatório para tentar encontrar um substituo. sendo as possíveis
+        # alternativas os estados vizinhos
         random_building_index = randrange(0, len(state.buildings))
         random_building = state.buildings[random_building_index]
         for building_proj in building_projs:
