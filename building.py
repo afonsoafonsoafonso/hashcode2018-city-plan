@@ -1,6 +1,8 @@
 class Building:
-    # locR e locC: row e col em que o building vai ser construido,
+    # mrow e mcol: row e col em que o building vai ser construido,
     def __init__(self, building_proj, mrow, mcol, building_id):
+        #projId acaba por ser o index do buildingProject na lista dos buildingProjects
+        #o buildingId é igual mas deste objecto building na lsita dos buildings
         self.projId = building_proj.id
         self.type = building_proj.type
         self.rows = building_proj.rows
