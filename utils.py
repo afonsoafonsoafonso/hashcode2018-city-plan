@@ -36,7 +36,7 @@ def getRandomSolution(init_state, city, building_projs, map):
 
     for nrow in range(len(map)):
         for ncol in range(len(map[nrow])):
-            #print(str(nrow) + ',' + str(ncol))
+            print(str(nrow) + ',' + str(ncol))
             descendants.clear()
             for proj in building_projs:
                 new_state = state.nextState(proj, nrow, ncol)
