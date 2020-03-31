@@ -48,7 +48,7 @@ end = time.time()
 print(final_state.score)
 #print_map(final_state)
 print(end - start) """
-
+"""
 print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
 
 start = time.time()
@@ -63,7 +63,7 @@ start = time.time()
 final_state = tabuSearch(20, 500, deepcopy(init_sol), building_projs)
 end = time.time()
 print(final_state.score)
-print(end - start)
+print(end - start)"""
 """
 print("\n\n#2")
 
@@ -151,10 +151,10 @@ print("Time: " + (str)(end - start))
 """
 
 
-""" print("Initial Solution: "+ (str)(init_sol.score))
+print("Initial Solution: "+ (str)(init_sol.score))
 start = time.time()
-final_state = swarm(deepcopy(init_sol), 30, building_projs, 2)
+final_state = swarm(5000, 2, deepcopy(init_sol), building_projs)
 end = time.time()
 print("Start Score: " + (str)(init_sol.score))
 print("Final Score: " + (str)(final_state.score))
-print("Time: " + (str)(end - start)) """
+print("Time: " + (str)(end - start))

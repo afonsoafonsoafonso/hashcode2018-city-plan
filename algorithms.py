@@ -182,7 +182,7 @@ def swarm(iter, distBtBirds, sol, building_projs):
     while True:
         randomDeltaX = randrange(0,3)
         randomDeltaY = randrange(0,3)
-        if randomDeltaX != randomDeltaY:
+        if randomDeltaX != 0 or randomDeltaY != 0:
             break
 
     #inicializacao dos elementos do swarm
@@ -193,6 +193,8 @@ def swarm(iter, distBtBirds, sol, building_projs):
     #alphaPos e alphaVel
     alphaPos = bird0.pos
     alphaVel = 1
+    counter = 0
+    auxDiagonal = 3 * sqrt(sol.city.cols *  sol.city.cols + sol.city.rows * sol.city.rows) // 4
 
     print("bird0(x,y): (" + str(bird0.pos[0]) + "," + str(bird0.pos[1]) + ")")
     print(bird0.deltaX, bird0.deltaY, bird0.vel)
@@ -278,11 +280,24 @@ def swarm(iter, distBtBirds, sol, building_projs):
             bird1.alphaStatus = False
             bird1.vel = alphaVel
         else:
+            counter += 1
             if bird0.alphaStatus == True:
+                if counter > auxDiagonal:
+                    randX = randrange(0, sol.city.cols)
+                    randY = randrange(0, sol.city.rows)
+                    bird0.pos = (randX, randY)
                 alphaPos = bird0.pos
             elif bird1.alphaStatus == True:
+                if counter > auxDiagonal:
+                    randX = randrange(0, sol.city.cols)
+                    randY = randrange(0, sol.city.rows)
+                    bird1.pos = (randX, randY)
                 alphaPos = bird1.pos
             else:
+                if counter > auxDiagonal:
+                    randX = randrange(0, sol.city.cols)
+                    randY = randrange(0, sol.city.rows)
+                    bird2.pos = (randX, randY)
                 alphaPos = bird2.pos
                 
             alphaVel = 1
@@ -307,7 +322,19 @@ class Bird:
         self.vel = vel
     
     def nextStep(self, positions, alphaPos, alphaVel, swarmSol, building_projs):#positions(dos outros birds); alphaVel(velocidade do líder(1,2,3..))
-        if self.alphaStatus == True:
+        if abs(self.deltaX) == 0.0 and abs(self.deltaY) == 0.0:
+            print("aiiii")
+            hypotheses = [-1,0,1]
+            while True:
+                randomDeltaX = randrange(0,3)
+                randomDeltaY = randrange(0,3)
+                if randomDeltaX != 0 or randomDeltaY != 0:
+                    break
+            self.deltaX = hypotheses[randomDeltaX]
+            self.deltaY = hypotheses[randomDeltaY]
+            self.pos = (self.pos[0] + self.deltaX * self.vel, self.pos[1] + self.deltaY * self.vel)
+            self.verifyPos(swarmSol)
+        elif self.alphaStatus == True:
             self.pos = (self.pos[0] + self.deltaX * self.vel, self.pos[1] + self.deltaY * self.vel)
             self.verifyPos(swarmSol)
         else:
@@ -315,8 +342,12 @@ class Bird:
             distX = alphaPos[0] - self.pos[0]
             distY = alphaPos[1] - self.pos[1]
             norma = sqrt(distX * distX + distY * distY)
-            self.deltaX = distX // norma
-            self.deltaY = distY // norma
+            if norma != 0:
+                self.deltaX = distX // norma
+                self.deltaY = distY // norma
+            else:
+                self.deltaX = - self.deltaX
+                self.deltaY = - self.deltaY
             #print(self.deltaX, self.deltaY, self.pos, self.vel)
             self.pos = (self.pos[0] + self.deltaX * self.vel, self.pos[1] + self.deltaY * self.vel)
             self.verifyPos(swarmSol)
@@ -324,10 +355,23 @@ class Bird:
 
         for i in range(len(positions)):
             if calcManhattanDist(self.pos[0], self.pos[1], positions[i][0], positions[i][1]) <= self.distBtBirds:
-                #print("tou tolo")
+                print("tou tolo")
                 self.deltaX = - self.deltaX
                 self.deltaY = - self.deltaY
-                self.pos = (self.pos[0] + 2 * self.deltaX * self.vel, self.pos[1] + 2 * self.deltaY * self.vel)
+                self.pos = (self.pos[0] + self.deltaX * self.vel, self.pos[1] + self.deltaY * self.vel)
+                distX = alphaPos[0] - self.pos[0]
+                distY = alphaPos[1] - self.pos[1]
+                norma = sqrt(distX * distX + distY * distY)
+                if norma != 0:
+                    auxDeltaX = distX // norma
+                    auxDeltaY = distY // norma
+                    if randrange(0,2) == 0:
+                        self.deltaX = - auxDeltaY
+                        self.deltaY = auxDeltaX
+                    else:
+                        self.deltaX = auxDeltaY
+                        self.deltaY = - auxDeltaX
+                self.pos = (self.pos[0] + self.deltaX * self.vel, self.pos[1] + self.deltaY * self.vel)
                 self.verifyPos(swarmSol)
                 break
 
