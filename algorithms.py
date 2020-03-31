@@ -2,6 +2,7 @@ from random import randrange, uniform
 from math import e, sqrt
 from copy import deepcopy
 from state import State
+from utils import *
 
 #como se escolhe o vizinho a verificar? para já está a ser escolhido um à toa
 # e se for melhor está feito
@@ -96,21 +97,28 @@ def tabuSearchWithAnnealing(tab_list_size, col_factor, init_sol, building_projs)
     return state
 
 ############# GENETIC ALGORITHM #############
-def genetic(iter, sols, building_projs, populationDiv6): #populationDiv6 corresponde ao valor da (população de cada geração)/6, no caso de populationDiv6=5, população=30
-    state = sols[0]
-    for i in range(1,len(sols)):
-        if sols[i].score > state.score:
-            score = deepcopy(sols[i])
-    
-    parent1 = deepcopy(sols[0])
-    parent2 = deepcopy(sols[1])
-    parent3 = deepcopy(sols[2])
+def genetic(iter, population, sol, building_projs):
+    state = sol
+    parent1 = sol
+
+    print("Processing first parents...")
+    init_map = [['.' for col in range(sol.city.cols)] for row in range(sol.city.rows)]
+    empty_state = State(sol.city, [], init_map, 0)
+    parent2 = getRandomSolution(empty_state, sol.city, building_projs, init_map)
+    parent3 = getRandomSolution(empty_state, sol.city, building_projs, init_map)
+
+    if sol.score < parent2.score:
+        state = parent2
+    elif sol.score < parent3.score:
+        state = parent3
+
+    iterCross = population // 6
 
     for _ in range(iter):
         #crossover
-        child1 = crossover(parent1, parent2, building_projs, populationDiv6)
-        child2 = crossover(parent2, parent3, building_projs, populationDiv6)
-        child3 = crossover(parent1, parent3, building_projs, populationDiv6)
+        child1 = crossover(parent1, parent2, building_projs, iterCross)
+        child2 = crossover(parent2, parent3, building_projs, iterCross)
+        child3 = crossover(parent1, parent3, building_projs, iterCross)
         #mutation
         child1 = mutation(child1, building_projs)
         child2 = mutation(child2, building_projs)
@@ -131,7 +139,7 @@ def genetic(iter, sols, building_projs, populationDiv6): #populationDiv6 corresp
 
     return state #return the overall best descendent
     
-def crossover(parent1, parent2, building_projs, populationDiv6):
+def crossover(parent1, parent2, building_projs, iterCross):
     bestChild = State(parent1.city, [], [], 0)
 
     if len(parent1.buildings) <= len(parent2.buildings):
@@ -139,7 +147,7 @@ def crossover(parent1, parent2, building_projs, populationDiv6):
     else:
         gap = len(parent2.buildings)
 
-    for i in range(populationDiv6):
+    for i in range(iterCross):
         random_first_index = randrange(0, gap-1)
         random_last_index = randrange(random_first_index, gap)
         
