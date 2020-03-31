@@ -3,14 +3,17 @@ from math import e, sqrt
 from copy import deepcopy
 from state import State
 from utils import *
+import logging
 
 #como se escolhe o vizinho a verificar? para já está a ser escolhido um à toa
 # e se for melhor está feito
 def hillClimbing(max_its, init_sol, building_projs):
+    f = open("log.txt", "w")
     state = init_sol
     its = 0
     while its < max_its:
         its += 1
+        print(str(its) + ',' + str(state.score), file=f)
         random_building_index = randrange(0, len(state.buildings))
         random_building = state.buildings[random_building_index]
         for building_proj in building_projs:
@@ -19,20 +22,24 @@ def hillClimbing(max_its, init_sol, building_projs):
                 state = new_state
                 found_better_state = True
                 break
+    f.close()
     return state
 
 def steepestAscent(max_its, init_sol, building_projs):
+    f = open("log.txt", "w")
     state = init_sol
     its = 0
     at_least_one_success = False
     while its < max_its:
         its += 1
+        print(str(its) + ',' + str(state.score), file=f)
         random_building_index = randrange(0, len(state.buildings))
         random_building = state.buildings[random_building_index]
         for building_proj in building_projs:
             new_state = state.replaceBuilding(random_building_index, building_proj)
             if new_state != False and new_state.score > state.score:
                 state = new_state
+    f.close()
     return state
 
 def simulatedAnnealing(colFactor, init_sol, building_projs):
@@ -41,8 +48,10 @@ def simulatedAnnealing(colFactor, init_sol, building_projs):
     state = init_sol
     t = init_t
     i = 0
+    f = open("log.txt", "w")
     while t > end_t:
         i += 1
+        print(str(i) + ',' + str(state.score), file=f)
         t *= colFactor
         random_building_index = randrange(0, len(state.buildings))
         random_building = state.buildings[random_building_index]
@@ -52,6 +61,8 @@ def simulatedAnnealing(colFactor, init_sol, building_projs):
                 if new_state.score > state.score or t/1000 > uniform(0,1):
                     state = new_state
                     break
+    print('Iterations: ' + str(i))
+    f.close()
     return state
 
 def tabuSearch(tab_list_size, max_its, init_sol, building_projs):
