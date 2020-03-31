@@ -1,4 +1,8 @@
+<<<<<<< HEAD:input/light_example.in
 20 20 2 15
+=======
+50 50 4 15
+>>>>>>> 4d47b7b5f48030edd6a2511fae16fb5cff500243:input/individual_based.in
 R 2 3 4
 .##
 ##.
