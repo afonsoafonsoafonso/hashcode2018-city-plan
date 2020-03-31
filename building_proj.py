@@ -6,7 +6,3 @@ class BuildingProj:
         self.cols = int(cols)
         self.cenas = int(cenas)
         self.plan = plan
-        if type=='R':
-            self.ratio = int(cenas)/(int(rows)*int(cols))
-        else:
-            self.ratio = None
