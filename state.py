@@ -48,14 +48,13 @@ class State:
                                 building_n = int(map[nrow][ncol]) # index+1 do building no array dos buildings ja construidos
                                 if building_n not in visited:
                                     visited.append(building_n)
-                                    found_building = buildings[building_n-1] #?
+                                    found_building = buildings[building_n-1]
                                     if found_building.type == 'R' and building_proj.type == 'U':
                                         if building_proj.cenas not in found_building.services:
                                             found_building.services.append(building_proj.cenas)
                                             score += found_building.cenas         
                                     elif found_building.type == 'U' and building_proj.type == 'R':
                                         if found_building.cenas not in buildings[index].services and found_building.cenas not in services:
-                                            #services.append(found_building.cenas)
                                             buildings[index].services.append(found_building.cenas)
                                             score += building_proj.cenas
         return score

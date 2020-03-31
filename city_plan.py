@@ -100,7 +100,7 @@ while True:
             printMap(state)
         i += 1
 
-    print('\nDo you with to try retry with the same initial solution?')
+    print('\nDo you wish to retry with the same initial solution?')
     print('1: Yes')
     print('2: No')
     if input('Your option: ') == 2:
