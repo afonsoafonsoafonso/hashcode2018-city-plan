@@ -117,8 +117,6 @@ def tabuSearchWithAnnealing(tab_list_size, col_factor, init_sol, building_projs)
 
 ############# GENETIC ALGORITHM #############
 def genetic(iter, population, percentage, sol, building_projs):
-    #print("Started Genetic Algorithms!!")
-
     #print("Processing first parents...")
     #setting the first parents
     parent1 = sol
@@ -135,7 +133,10 @@ def genetic(iter, population, percentage, sol, building_projs):
     elif parent1.score < parent3.score and parent2.score < parent3.score:
         state = parent3
 
-    #print("Best initial score: " + str(state.score))
+    print("Started Genetic Algorithms")
+    print("Initial score1: " + str(parent1.score))
+    print("Initial score2: " + str(parent2.score))
+    print("Initial score3: " + str(parent2.score))
 
     #setting the crossover number of iterations
     iterCross = population // 6
@@ -213,10 +214,10 @@ def mutation(seed,building_projs, percentage):
 
 ############# PARTICLE SWARM OPTIMIZATION #############
 def swarm(iter, distBtBirds, sol, building_projs):    
-    #print("Started Particle Swarm Optimization!!")
+    print("Started Particle Swarm Optimization")
 
     swarmSol = deepcopy(sol)
-    #print("Initial Score: " + str(swarmSol.score))
+    print("Initial Score: " + str(swarmSol.score))
 
     #direção inicial random do lider
     hypotheses = [-1,0,1]
