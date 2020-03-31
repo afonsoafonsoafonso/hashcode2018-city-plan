@@ -4,7 +4,7 @@ from city import City
 from building_proj import BuildingProj
 from building import Building
 from state import State
-from utils import *
+from utils import * 
 from algorithms import *
 
 if len(sys.argv) != 2:

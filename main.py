@@ -132,7 +132,7 @@ print(end - start)
 print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
 """
 
-"""
+
 #GENETIC ALGORITHM LINDOOO
 init_sol1 = getRandomSolution(empty_state, city, building_projs, init_map)
 init_sol2 = getRandomSolution(empty_state, city, building_projs, init_map)
@@ -144,13 +144,13 @@ sols.append(init_sol)
 sols.append(init_sol1)
 sols.append(init_sol2)
 start = time.time()
-final_state = genetic(deepcopy(sols), 40, building_projs, 5)
+final_state = genetic(deepcopy(sols), 40, building_projs, 6)
 end = time.time()
 print("Final Score: " + (str)(final_state.score))
 print("Time: " + (str)(end - start))
+
+
 """
-
-
 print("Initial Solution: "+ (str)(init_sol.score))
 start = time.time()
 final_state = swarm(5000, 2, deepcopy(init_sol), building_projs)
@@ -158,3 +158,4 @@ end = time.time()
 print("Start Score: " + (str)(init_sol.score))
 print("Final Score: " + (str)(final_state.score))
 print("Time: " + (str)(end - start))
+"""

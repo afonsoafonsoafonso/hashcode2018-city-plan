@@ -108,28 +108,34 @@ def tabuSearchWithAnnealing(tab_list_size, col_factor, init_sol, building_projs)
     return state
 
 ############# GENETIC ALGORITHM #############
-def genetic(iter, population, sol, building_projs):
-    print("Started Genetic Algorithms!!")
+def genetic(sols, iter, building_projs, population):
+    f = open("log.txt", "w")
+    #print("Started Genetic Algorithms!!")
 
-    state = sol
-    parent1 = sol
+    state = sols[0]
+    parent1 = sols[0]
+    parent2 = sols[1]
+    parent3 = sols[2]
 
+    print("tou tolo")
+
+    """
     print("Processing first parents...")
     init_map = [['.' for col in range(sol.city.cols)] for row in range(sol.city.rows)]
     empty_state = State(sol.city, [], init_map, 0)
     parent2 = getRandomSolution(empty_state, sol.city, building_projs, init_map)
     parent3 = getRandomSolution(empty_state, sol.city, building_projs, init_map)
     print("First parents processed!!")
-
-    if sol.score < parent2.score:
+    """
+    if parent1.score < parent2.score:
         state = parent2
-    elif sol.score < parent3.score:
+    elif parent1.score < parent3.score:
         state = parent3
-    print("Best initial score: " + str(state.score))
+    #print("Best initial score: " + str(state.score))
 
     iterCross = population // 6
 
-    for _ in range(iter):
+    for x in range(iter):
         #crossover
         child1 = crossover(parent1, parent2, building_projs, iterCross)
         child2 = crossover(parent2, parent3, building_projs, iterCross)
@@ -151,6 +157,9 @@ def genetic(iter, population, sol, building_projs):
         parent1 = child1
         parent2 = child2
         parent3 = child3
+
+        #logging
+        print(str(x +1 ) + ',' + str(state.score), file=f)
 
     return state #return the overall best descendent
     
