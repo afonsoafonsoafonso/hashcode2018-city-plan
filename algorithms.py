@@ -109,6 +109,8 @@ def tabuSearchWithAnnealing(tab_list_size, col_factor, init_sol, building_projs)
 
 ############# GENETIC ALGORITHM #############
 def genetic(iter, population, sol, building_projs):
+    print("Started Genetic Algorithms!!")
+
     state = sol
     parent1 = sol
 
@@ -117,11 +119,13 @@ def genetic(iter, population, sol, building_projs):
     empty_state = State(sol.city, [], init_map, 0)
     parent2 = getRandomSolution(empty_state, sol.city, building_projs, init_map)
     parent3 = getRandomSolution(empty_state, sol.city, building_projs, init_map)
+    print("First parents processed!!")
 
     if sol.score < parent2.score:
         state = parent2
     elif sol.score < parent3.score:
         state = parent3
+    print("Best initial score: " + str(state.score))
 
     iterCross = population // 6
 
@@ -144,9 +148,9 @@ def genetic(iter, population, sol, building_projs):
             state = child3
 
         #childs become parents in the next iteration
-        parent1=child1
-        parent2=child2
-        parent3=child3
+        parent1 = child1
+        parent2 = child2
+        parent3 = child3
 
     return state #return the overall best descendent
     
@@ -193,7 +197,10 @@ def mutation(seed,building_projs):
 
 ############# PARTICLE SWARM OPTIMIZATION #############
 def swarm(iter, distBtBirds, sol, building_projs):
+    print("Started Particle Swarm Optimization!!")
+
     swarmSol = deepcopy(sol)
+    print("Initial Score: " + str(swarmSol.score))
 
     #direção inicial random do lider
     hypotheses = [-1,0,1]
@@ -213,7 +220,8 @@ def swarm(iter, distBtBirds, sol, building_projs):
     alphaVel = 1
     counter = 0
     auxDiagonal = 3 * sqrt(sol.city.cols *  sol.city.cols + sol.city.rows * sol.city.rows) // 4
-
+    
+    """
     print("bird0(x,y): (" + str(bird0.pos[0]) + "," + str(bird0.pos[1]) + ")")
     print(bird0.deltaX, bird0.deltaY, bird0.vel)
     print("bird1(x,y): (" + str(bird1.pos[0]) + "," + str(bird1.pos[1]) + ")")
@@ -221,6 +229,7 @@ def swarm(iter, distBtBirds, sol, building_projs):
     print("bird2(x,y): (" + str(bird2.pos[0]) + "," + str(bird2.pos[1]) + ")")
     print(bird2.deltaX, bird2.deltaY, bird2.vel)
     print("################")
+    """
 
     #loop principal
     for _ in range(iter):
@@ -230,26 +239,28 @@ def swarm(iter, distBtBirds, sol, building_projs):
         positions.append(bird1.pos)
         positions.append(bird2.pos)
         swarmSol, bird0Score = bird0.nextStep(positions, alphaPos, alphaVel, swarmSol, building_projs)
-        print("bird0(x,y): (" + str(bird0.pos[0]) + "," + str(bird0.pos[1]) + ")")
-        print(bird0.deltaX, bird0.deltaY, bird0.vel, bird0Score, str(bird0.alphaStatus))
+        #print("bird0(x,y): (" + str(bird0.pos[0]) + "," + str(bird0.pos[1]) + ")")
+        #print(bird0.deltaX, bird0.deltaY, bird0.vel, bird0Score, str(bird0.alphaStatus))
 
         positions = []
         positions.append(bird0.pos)
         positions.append(bird2.pos)
         swarmSol, bird1Score = bird1.nextStep(positions, alphaPos, alphaVel, swarmSol, building_projs)
-        print("bird1(x,y): (" + str(bird1.pos[0]) + "," + str(bird1.pos[1]) + ")")
-        print(bird1.deltaX, bird1.deltaY, bird1.vel, bird1Score, str(bird1.alphaStatus))
+        #print("bird1(x,y): (" + str(bird1.pos[0]) + "," + str(bird1.pos[1]) + ")")
+        #print(bird1.deltaX, bird1.deltaY, bird1.vel, bird1Score, str(bird1.alphaStatus))
 
         positions = []
         positions.append(bird0.pos)
         positions.append(bird1.pos)
         swarmSol, bird2Score = bird2.nextStep(positions, alphaPos, alphaVel, swarmSol, building_projs)
-        print("bird2(x,y): (" + str(bird2.pos[0]) + "," + str(bird2.pos[1]) + ")")
-        print(bird2.deltaX, bird2.deltaY, bird2.vel, bird2Score, str(bird2.alphaStatus))
-        print("################")
+        #print("bird2(x,y): (" + str(bird2.pos[0]) + "," + str(bird2.pos[1]) + ")")
+        #print(bird2.deltaX, bird2.deltaY, bird2.vel, bird2Score, str(bird2.alphaStatus))
+        #print("################")
 
         #verificacao do melhoramento do score de cada um e estabelecimento do lider
         if bird0Score > bird1Score and bird0Score > bird2Score:
+            print("+Bird0 had the best score increase!")
+
             alphaPos = bird0.pos
 
             if bird0.alphaStatus == True:
@@ -266,6 +277,8 @@ def swarm(iter, distBtBirds, sol, building_projs):
             bird2.alphaStatus = False
             bird2.vel = alphaVel
         elif bird1Score > bird0Score and bird1Score > bird2Score:
+            print("+Bird1 had the best score increase!")
+
             alphaPos = bird1.pos
 
             if bird1.alphaStatus == True:
@@ -282,6 +295,8 @@ def swarm(iter, distBtBirds, sol, building_projs):
             bird2.alphaStatus = False
             bird2.vel = alphaVel
         elif bird2Score > bird0Score and bird2Score > bird1Score:
+            print("+Bird2 had the best score increase!")
+
             alphaPos = bird2.pos
 
             if bird2.alphaStatus == True:
@@ -341,7 +356,7 @@ class Bird:
     
     def nextStep(self, positions, alphaPos, alphaVel, swarmSol, building_projs):#positions(dos outros birds); alphaVel(velocidade do líder(1,2,3..))
         if abs(self.deltaX) == 0.0 and abs(self.deltaY) == 0.0:
-            print("aiiii")
+            #print("aiiii")
             hypotheses = [-1,0,1]
             while True:
                 randomDeltaX = randrange(0,3)
@@ -373,7 +388,7 @@ class Bird:
 
         for i in range(len(positions)):
             if calcManhattanDist(self.pos[0], self.pos[1], positions[i][0], positions[i][1]) <= self.distBtBirds:
-                print("tou tolo")
+                #print("tou tolo")
                 self.deltaX = - self.deltaX
                 self.deltaY = - self.deltaY
                 self.pos = (self.pos[0] + self.deltaX * self.vel, self.pos[1] + self.deltaY * self.vel)
@@ -393,6 +408,11 @@ class Bird:
                 self.verifyPos(swarmSol)
                 break
 
+        if self.pos[0] < 0 or self.pos[0] > (swarmSol.city.cols - 1) or self.pos[1] < 0 or self.pos[1] > (swarmSol.city.rows -1):
+            randX = randrange(0, swarmSol.city.cols)
+            randY = randrange(0, swarmSol.city.rows)
+            self.pos = (randX, randY)
+    
         prevScore = swarmSol.score
         newSol = self.optimizePosition(self.pos, swarmSol, building_projs)
 
@@ -419,7 +439,7 @@ class Bird:
                 newState = prevState.replaceBuilding(buildingIndex - 1, proj)            
 
             if newState != False and newState.score > bestState.score:
-                print("mais score pah")
+                #print("mais score pah")
                 bestState = newState
 
         return bestState

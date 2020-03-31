@@ -49,7 +49,7 @@ def getRandomSolution(init_state, city, building_projs, map):
     return state
 
 def printMap(final_state):
-    print(final_state.score)
+    #print(final_state.score)
     for rown in range(len(final_state.map)):
         print('\n', end='')
         for coln in range(len(final_state.map[0])):
@@ -59,6 +59,7 @@ def printMap(final_state):
                 print(final_state.buildings[int(final_state.map[rown][coln])-1].type, end='')
                 print(str(final_state.map[rown][coln]).zfill(3), end='')
                 print('|', end='')
+    print("\n\n")
 
 def removeFromMap(map, building):
     new_map = deepcopy(map)
