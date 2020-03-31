@@ -7,7 +7,7 @@ class Building:
         self.type = building_proj.type
         self.rows = building_proj.rows
         self.cols = building_proj.cols
-        self.cenas = building_proj.cenas
+        self.attribute = building_proj.attribute
         self.plan = building_proj.plan
         self.mrow = mrow
         self.mcol = mcol

@@ -55,13 +55,13 @@ class State:
                                     visited.append(building_n)
                                     found_building = buildings[building_n-1]
                                     if found_building.type == 'R' and building_proj.type == 'U':
-                                        if building_proj.cenas not in found_building.services:
-                                            found_building.services.append(building_proj.cenas) # append nos services do edificio encontrado o serviço que está ser construido
-                                            score += found_building.cenas         
+                                        if building_proj.attribute not in found_building.services:
+                                            found_building.services.append(building_proj.attribute) # append nos services do edificio encontrado o serviço que está ser construido
+                                            score += found_building.attribute         
                                     elif found_building.type == 'U' and building_proj.type == 'R':
-                                        if found_building.cenas not in buildings[index].services and found_building.cenas not in services:
-                                            buildings[index].services.append(found_building.cenas) # append nos services do edificio a ser construido o servico encontrado
-                                            score += building_proj.cenas
+                                        if found_building.attribute not in buildings[index].services and found_building.attribute not in services:
+                                            buildings[index].services.append(found_building.attribute) # append nos services do edificio a ser construido o servico encontrado
+                                            score += building_proj.attribute
         return score
 
     def replaceBuilding(self, index, building_proj):
