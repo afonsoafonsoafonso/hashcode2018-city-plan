@@ -116,31 +116,28 @@ def tabuSearchWithAnnealing(tab_list_size, col_factor, init_sol, building_projs)
     return state
 
 ############# GENETIC ALGORITHM #############
-def genetic(sols, iter, building_projs, population):
-    f = open("log.txt", "w")
+def genetic(iter, population, percentage, sol, building_projs):
     #print("Started Genetic Algorithms!!")
 
-    state = sols[0]
-    parent1 = sols[0]
-    parent2 = sols[1]
-    parent3 = sols[2]
-
-    print("tou tolo")
-
-    """
-    print("Processing first parents...")
+    #print("Processing first parents...")
+    #setting the first parents
+    parent1 = sol
     init_map = [['.' for col in range(sol.city.cols)] for row in range(sol.city.rows)]
     empty_state = State(sol.city, [], init_map, 0)
     parent2 = getRandomSolution(empty_state, sol.city, building_projs, init_map)
     parent3 = getRandomSolution(empty_state, sol.city, building_projs, init_map)
-    print("First parents processed!!")
-    """
-    if parent1.score < parent2.score:
+    #print("First parents processed!!")
+
+    #setting the best initial solution
+    state = parent1
+    if parent1.score < parent2.score and parent3.score < parent2.score:
         state = parent2
-    elif parent1.score < parent3.score:
+    elif parent1.score < parent3.score and parent2.score < parent3.score:
         state = parent3
+
     #print("Best initial score: " + str(state.score))
 
+    #setting the crossover number of iterations
     iterCross = population // 6
 
     for x in range(iter):
@@ -149,9 +146,9 @@ def genetic(sols, iter, building_projs, population):
         child2 = crossover(parent2, parent3, building_projs, iterCross)
         child3 = crossover(parent1, parent3, building_projs, iterCross)
         #mutation
-        child1 = mutation(child1, building_projs)
-        child2 = mutation(child2, building_projs)
-        child3 = mutation(child3, building_projs)
+        child1 = mutation(child1, building_projs, percentage)
+        child2 = mutation(child2, building_projs, percentage)
+        child3 = mutation(child3, building_projs, percentage)
         
         #Saving the best descent of each iteration if they are better than the anterior
         if child1.score >= child2.score and child1.score >= child3.score and child1.score >= state.score:
@@ -166,26 +163,26 @@ def genetic(sols, iter, building_projs, population):
         parent2 = child2
         parent3 = child3
 
-        #logging
-        print(str(x +1 ) + ',' + str(state.score), file=f)
-
     return state #return the overall best descendent
     
 def crossover(parent1, parent2, building_projs, iterCross):
     bestChild = State(parent1.city, [], [], 0)
 
+    #getting the number of buildings we can swaped
     if len(parent1.buildings) <= len(parent2.buildings):
         gap = len(parent1.buildings)
     else:
         gap = len(parent2.buildings)
 
     for i in range(iterCross):
+        #get the random index's to be swaped
         random_first_index = randrange(0, gap-1)
         random_last_index = randrange(random_first_index, gap)
         
         descendent1 = deepcopy(parent1)
         descendent2 = deepcopy(parent2)        
 
+        #do the swap operation
         for i in range(random_first_index, random_last_index):
             newState1 = descendent1.replaceBuilding(i, building_projs[parent1.buildings[i].projId])
             newState2 = descendent2.replaceBuilding(i, building_projs[parent2.buildings[i].projId])
@@ -193,7 +190,8 @@ def crossover(parent1, parent2, building_projs, iterCross):
             if newState1 != False and newState2 != False:
                 descendent1 = newState1
                 descendent2 = newState2
-    
+        
+        #making sure we get the best child 
         if descendent1.score >= descendent2.score and descendent1.score > bestChild.score:
             bestChild = descendent1
         elif descendent2.score > descendent1.score and descendent2.score > bestChild.score:
@@ -201,10 +199,11 @@ def crossover(parent1, parent2, building_projs, iterCross):
 
     return bestChild
 
-def mutation(seed,building_projs):
+def mutation(seed,building_projs, percentage):
+    #doing the mutation
     for x in range (len(seed.buildings)):
         r = randrange(1,101)    
-        if r <= 30:
+        if r <= percentage:
             random_building_index = randrange(0, len(building_projs))
             random_building = building_projs[random_building_index]
             new_seed = seed.replaceBuilding(x, random_building)
@@ -213,11 +212,11 @@ def mutation(seed,building_projs):
     return seed
 
 ############# PARTICLE SWARM OPTIMIZATION #############
-def swarm(iter, distBtBirds, sol, building_projs):
-    print("Started Particle Swarm Optimization!!")
+def swarm(iter, distBtBirds, sol, building_projs):    
+    #print("Started Particle Swarm Optimization!!")
 
     swarmSol = deepcopy(sol)
-    print("Initial Score: " + str(swarmSol.score))
+    #print("Initial Score: " + str(swarmSol.score))
 
     #direção inicial random do lider
     hypotheses = [-1,0,1]
@@ -276,7 +275,7 @@ def swarm(iter, distBtBirds, sol, building_projs):
 
         #verificacao do melhoramento do score de cada um e estabelecimento do lider
         if bird0Score > bird1Score and bird0Score > bird2Score:
-            print("+Bird0 had the best score increase!")
+            #print("+Bird0 had the best score increase!")
 
             alphaPos = bird0.pos
 
@@ -294,7 +293,7 @@ def swarm(iter, distBtBirds, sol, building_projs):
             bird2.alphaStatus = False
             bird2.vel = alphaVel
         elif bird1Score > bird0Score and bird1Score > bird2Score:
-            print("+Bird1 had the best score increase!")
+            #print("+Bird1 had the best score increase!")
 
             alphaPos = bird1.pos
 
@@ -312,7 +311,7 @@ def swarm(iter, distBtBirds, sol, building_projs):
             bird2.alphaStatus = False
             bird2.vel = alphaVel
         elif bird2Score > bird0Score and bird2Score > bird1Score:
-            print("+Bird2 had the best score increase!")
+            #print("+Bird2 had the best score increase!")
 
             alphaPos = bird2.pos
 
@@ -358,7 +357,7 @@ def swarm(iter, distBtBirds, sol, building_projs):
         bird0Score = 0
         bird1Score = 0
         bird2Score = 0
-    
+
     return swarmSol
 
 
@@ -372,8 +371,7 @@ class Bird:
         self.vel = vel
     
     def nextStep(self, positions, alphaPos, alphaVel, swarmSol, building_projs):#positions(dos outros birds); alphaVel(velocidade do líder(1,2,3..))
-        if abs(self.deltaX) == 0.0 and abs(self.deltaY) == 0.0:
-            #print("aiiii")
+        if abs(self.deltaX) == 0.0 and abs(self.deltaY) == 0.0:#checking if the movement deltaX/Y are null
             hypotheses = [-1,0,1]
             while True:
                 randomDeltaX = randrange(0,3)
@@ -384,11 +382,9 @@ class Bird:
             self.deltaY = hypotheses[randomDeltaY]
             self.pos = (self.pos[0] + self.deltaX * self.vel, self.pos[1] + self.deltaY * self.vel)
             self.verifyPos(swarmSol)
-        elif self.alphaStatus == True:
             self.pos = (self.pos[0] + self.deltaX * self.vel, self.pos[1] + self.deltaY * self.vel)
             self.verifyPos(swarmSol)
         else:
-            #print("se fodeu")
             distX = alphaPos[0] - self.pos[0]
             distY = alphaPos[1] - self.pos[1]
             norma = sqrt(distX * distX + distY * distY)
@@ -398,14 +394,11 @@ class Bird:
             else:
                 self.deltaX = - self.deltaX
                 self.deltaY = - self.deltaY
-            #print(self.deltaX, self.deltaY, self.pos, self.vel)
             self.pos = (self.pos[0] + self.deltaX * self.vel, self.pos[1] + self.deltaY * self.vel)
             self.verifyPos(swarmSol)
-            #print(self.deltaX, self.deltaY, self.pos, self.vel)
 
-        for i in range(len(positions)):
+        for i in range(len(positions)):#checking for colisions
             if calcManhattanDist(self.pos[0], self.pos[1], positions[i][0], positions[i][1]) <= self.distBtBirds:
-                #print("tou tolo")
                 self.deltaX = - self.deltaX
                 self.deltaY = - self.deltaY
                 self.pos = (self.pos[0] + self.deltaX * self.vel, self.pos[1] + self.deltaY * self.vel)
@@ -435,13 +428,14 @@ class Bird:
 
         return newSol, newSol.score - prevScore
 
+    #checking if the bird is in the map
     def verifyPos(self, swarmSol):
         if self.pos[0] < 0 or self.pos[0] > (swarmSol.city.cols - 1) or self.pos[1] < 0 or self.pos[1] > (swarmSol.city.rows -1):
             self.deltaX = - self.deltaX
             self.deltaY = - self.deltaY
             self.pos = (self.pos[0] + 2 * self.deltaX * self.vel, self.pos[1] + 2 * self.deltaY * self.vel)
 
-    
+    #chaging or inserting building, using the actual position    
     def optimizePosition(self, position, swarmSol, building_projs):
         prevState = swarmSol
         bestState = swarmSol
@@ -456,10 +450,10 @@ class Bird:
                 newState = prevState.replaceBuilding(buildingIndex - 1, proj)            
 
             if newState != False and newState.score > bestState.score:
-                #print("mais score pah")
                 bestState = newState
 
         return bestState
             
+#calculating the distance between 
 def calcManhattanDist(row1, col1, row2, col2):
     return (abs(row2 - row1) + abs(col2 - col1))

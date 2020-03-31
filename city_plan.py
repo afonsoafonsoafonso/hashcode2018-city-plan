@@ -73,7 +73,8 @@ while True:
             print('~~~~Genetic Algorithm Options~~~~\n')
             option1 = input('Iterations: ')
             option2 = input('Number of population per generation (multiple of 6): ')
-            queue.append((genetic, [int(option1), int(option2)]))
+            option3 = input('Mutation percentage: ')
+            queue.append((genetic, [int(option1), int(option2), int(option3)]))
 
         elif user_input == '7':
             print('~~~~~~~~~~Swarm Options~~~~~~~~~~\n')
